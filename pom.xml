@@ -20,6 +20,7 @@
         <jetbrains.version>18.0.0</jetbrains.version>
         <expiringmap.version>0.5.9</expiringmap.version>
         <guava.version>29.0-jre</guava.version>
+        <caffeine.version>2.8.8</caffeine.version>
     </properties>
 
     <dependencies>
@@ -70,6 +71,15 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
     </dependencies>

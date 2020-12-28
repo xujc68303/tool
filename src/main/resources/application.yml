@@ -16,6 +16,13 @@ spring:
   profiles:
     active: dev
 
+  cache:
+    type: caffeine
+    cache-names: localCache
+    caffeine:
+      spec: initialCapacity=50,maximumSize=1024,refreshAfterWrite=60s
+
+
 #线程池配置
 async:
   executor:
