@@ -1,15 +1,16 @@
 package com.xjc.tool.caffeine;
 
 import com.github.benmanes.caffeine.cache.*;
+import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 /**
  * @Version 1.0
@@ -19,6 +20,8 @@ import java.util.function.Function;
  * @Description
  */
 @Slf4j
+@Service
+@SuppressWarnings("all")
 public class CaffeineServiceImpl implements CaffeineService{
 
     private long maximumSize = 256L;
@@ -27,18 +30,35 @@ public class CaffeineServiceImpl implements CaffeineService{
 
     private long durationWrite = 10;
 
-    private long asyncwrite = 10;
+    private long asyncWrite = 10;
 
     private Cache<String, Object> cache;
 
     @PostConstruct
     private void init(){
         cache = Caffeine.newBuilder()
+                .recordStats()
                 .maximumSize(maximumSize)
                 .initialCapacity(initialCapacity)
-                .expireAfterWrite(durationWrite, TimeUnit.SECONDS)
-                .refreshAfterWrite(asyncwrite, TimeUnit.SECONDS)
-                .recordStats()
+//                .expireAfterWrite(durationWrite, TimeUnit.SECONDS)
+                .refreshAfterWrite(asyncWrite, TimeUnit.SECONDS)
+                .removalListener(new RemovalListener<String, Object>( ) {
+
+                    /**
+                     * Notifies the listener that a removal occurred at some point in the past.
+                     * <p>
+                     * This does not always signify that the key is now absent from the cache, as it may have already
+                     * been re-added.
+                     *
+                     * @param key   the key represented by this entry, or {@code null} if collected
+                     * @param value the value represented by this entry, or {@code null} if collected
+                     * @param cause the reason for which the entry was removed
+                     */
+                    @Override
+                    public void onRemoval(@Nullable String key, @Nullable Object value, @NonNull RemovalCause cause) {
+                        log.warn("key:{}被移除， cause={}", key, cause);
+                    }
+                })
                 .writer(new CacheWriter<String, Object>( ) {
 
                     @Override
@@ -50,22 +70,7 @@ public class CaffeineServiceImpl implements CaffeineService{
                     public void delete(@NonNull String key, @Nullable Object value, @NonNull RemovalCause removalCause) {
                         log.warn("key={}, cause={}, CacheWriter delete", key, removalCause);
                     }
-                })
-                .build(new CacheLoader<Object, Object>() {
-
-                    @Nullable
-                    @Override
-                    public Object load(@NonNull Object o) throws Exception {
-                        // 同步加载
-                        return null;
-                    }
-
-                    @Override
-                    public @NonNull CompletableFuture<Object> asyncLoad(@NonNull Object key, @NonNull Executor executor) {
-                        // 异步加载
-                        return null;
-                    }
-                });
+                }).build();
     }
 
     @Override
@@ -74,21 +79,43 @@ public class CaffeineServiceImpl implements CaffeineService{
     }
 
     @Override
-    public Object get(String key) {
-        return cache.get(key,  k-> setValue(key).apply(key));
+    public void putAll(Map<String, Object> map) {
+        cache.putAll(map);
     }
 
     @Override
-    public void delete(String key) {
+    public Object getPresent(String key) {
+        return cache.getIfPresent(key);
+    }
+
+    @Override
+    public Map<String, Object> getAllPresent(List<String> keys) {
+        return cache.getAllPresent(keys);
+    }
+
+    @Override
+    public void invalidate(String key) {
         cache.invalidate(key);
     }
 
-    /**
-     * 如果一个key不存在，那么生成value
-     * @param key
-     * @return
-     */
-    private Function<String, Object> setValue(String key){
-        return t -> key + "value";
+    @Override
+    public void invalidateAll(List<String> keys) {
+        cache.invalidateAll(keys);
+    }
+
+    @Override
+    public void clear() {
+        cache.invalidateAll();
+    }
+
+    @Override
+    public CacheStats getStats() {
+        return cache.stats();
+    }
+
+    @Override
+    public long size() {
+        cache.cleanUp();
+        return cache.estimatedSize();
     }
 }
