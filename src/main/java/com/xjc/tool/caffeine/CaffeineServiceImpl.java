@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,20 +44,9 @@ public class CaffeineServiceImpl implements CaffeineService{
                 .recordStats()
                 .maximumSize(maximumSize)
                 .initialCapacity(initialCapacity)
-//                .expireAfterWrite(durationWrite, TimeUnit.SECONDS)
                 .refreshAfterWrite(asyncWrite, TimeUnit.SECONDS)
                 .removalListener(new RemovalListener<String, Object>( ) {
 
-                    /**
-                     * Notifies the listener that a removal occurred at some point in the past.
-                     * <p>
-                     * This does not always signify that the key is now absent from the cache, as it may have already
-                     * been re-added.
-                     *
-                     * @param key   the key represented by this entry, or {@code null} if collected
-                     * @param value the value represented by this entry, or {@code null} if collected
-                     * @param cause the reason for which the entry was removed
-                     */
                     @Override
                     public void onRemoval(@Nullable String key, @Nullable Object value, @NonNull RemovalCause cause) {
                         log.warn("key:{}被移除， cause={}", key, cause);
@@ -70,8 +63,26 @@ public class CaffeineServiceImpl implements CaffeineService{
                     public void delete(@NonNull String key, @Nullable Object value, @NonNull RemovalCause removalCause) {
                         log.warn("key={}, cause={}, CacheWriter delete", key, removalCause);
                     }
-                }).build();
+                }).build(new CacheLoader<String ,Object>(){
+
+                    @Nullable
+                    @Override
+                    public Object load(@NonNull String key) throws Exception {
+                        return callable.call();
+                    }
+                });
     }
+
+    private static Callable<String> callable = new Callable<String>() {
+        @Override
+        public String call() throws Exception {
+            System.out.println("begin to mock query db...");
+            Thread.sleep(2000);
+            System.out.println("success to mock query db...");
+            return UUID.randomUUID().toString();
+        }
+    };
+
 
     @Override
     public void put(String key, Object value) {

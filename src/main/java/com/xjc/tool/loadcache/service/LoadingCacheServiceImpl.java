@@ -4,6 +4,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.xjc.tool.loadcache.api.LoadingCacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -53,9 +58,14 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
      */
     private static TimeUnit UNIT = TimeUnit.SECONDS;
 
-    private static final ScheduledExecutorService scheduledexecutorservice = Executors.newSingleThreadScheduledExecutor( );
+    private static final ScheduledExecutorService scheduledexecutorservice = Executors.newSingleThreadScheduledExecutor();
+
+    private static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+
+    private static ThreadLocal<Object> threadLocal;
 
     private static volatile LoadingCache<String, Object> loadingCache;
+
 
     static {
         synchronized (LoadingCache.class) {
@@ -64,9 +74,6 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
                     .recordStats( )
                     .maximumSize(MAX_SIZE)
                     .initialCapacity(INITI_ALCAPA_CITY)
-                    // 写入60分钟后过期
-                    .expireAfterWrite(DURA_TION, UNIT)
-                    // 手动刷新
                     .refreshAfterWrite(REFRESH, UNIT)
                     .removalListener((monitor) -> {
                         log.info("key:{}被移除", monitor.getKey( ));
@@ -75,7 +82,14 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
 
                         @Override
                         public Object load(@NotNull String key) throws Exception {
-                            return loadingCache.getUnchecked(key);
+                            return callable.call();
+                        }
+
+                        @Override
+                        public ListenableFuture<Object> reload(String key, Object oldValue) throws Exception {
+                            log.warn("......后台线程池异步刷新:" + key);
+                            threadLocal.set(key);
+                            return service.submit(callable);
                         }
                     });
 
@@ -83,11 +97,28 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
         }
     }
 
+    // 模拟一个需要耗时2s的数据库查询任务
+    private static Callable<Object> callable = new Callable<Object>() {
+        @Override
+        public Object call() throws Exception {
+            String k = threadLocal.get().toString();
+            System.out.println("begin to mock query db..."+ k);
+            Thread.sleep(2000);
+            System.out.println("success to mock query db..."+ k);
+            threadLocal.remove();
+            return UUID.randomUUID();
+        }
+    };
+
+
     @Override
     public void run() {
         this.asMap( ).keySet( ).forEach(k -> loadingCache.refresh(k));
     }
 
+    /**
+     * 定时刷新
+     */
     private static void asyncRefresh() {
         try {
             scheduledexecutorservice.scheduleAtFixedRate(new LoadingCacheServiceImpl( ), 0, REFRESH, UNIT);
