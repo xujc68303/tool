@@ -94,18 +94,21 @@ public interface ExpiringMapService {
 
     /**
      * 获取缓存长度
+     *
      * @return
      */
     long getSize();
 
     /**
      * 获取全部k
+     *
      * @return
      */
     List<String> getKeys();
 
     /**
      * 获取全部缓存
+     *
      * @return
      */
     Map<String, Object> getAll();

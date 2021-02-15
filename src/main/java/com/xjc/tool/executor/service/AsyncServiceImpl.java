@@ -28,7 +28,7 @@ public class AsyncServiceImpl implements AsyncService {
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
-            e.printStackTrace( );
+            e.printStackTrace();
         }
         log.info("end executeAsync");
     }
@@ -39,7 +39,7 @@ public class AsyncServiceImpl implements AsyncService {
         log.info("start task1");
         Thread.sleep(5000);
         log.info("end task1");
-        countDownLatch.countDown( );
+        countDownLatch.countDown();
         return new AsyncResult<String>("Task1 accomplished!");
     }
 
@@ -48,7 +48,7 @@ public class AsyncServiceImpl implements AsyncService {
         log.info("start task2");
         Thread.sleep(3000);
         log.info("end task2");
-        countDownLatch.countDown( );
+        countDownLatch.countDown();
         return new AsyncResult<String>("Task2 accomplished!");
     }
 }

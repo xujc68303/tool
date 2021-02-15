@@ -45,14 +45,14 @@ public class FilesServiceImpl implements FilesService {
             Path dirPath = Paths.get(path);
             if (!Files.exists(dirPath)) {
                 Files.createFile(dirPath);
-                log.info("FileUtil-createFile success, runTime=", stopWatch.getTotalTimeMillis( ));
+                log.info("FileUtil-createFile success, runTime=", stopWatch.getTotalTimeMillis());
                 return true;
             }
         } catch (Exception e) {
-            log.error("FileUtil-createFile error, runTime=", stopWatch.getTotalTimeMillis( ), e);
+            log.error("FileUtil-createFile error, runTime=", stopWatch.getTotalTimeMillis(), e);
         } finally {
             if (stopWatch != null) {
-                stopWatch.stop( );
+                stopWatch.stop();
             }
         }
         return false;
@@ -67,14 +67,14 @@ public class FilesServiceImpl implements FilesService {
             Path dirPath = Paths.get(path);
             if (Files.notExists(dirPath)) {
                 Files.createDirectories(dirPath);
-                log.info("FileUtil-createDirectories success, runTime=", stopWatch.getTotalTimeMillis( ));
+                log.info("FileUtil-createDirectories success, runTime=", stopWatch.getTotalTimeMillis());
                 return true;
             }
         } catch (Exception e) {
-            log.error("FileUtil-createDirectories error, runTime=", stopWatch.getTotalTimeMillis( ), e);
+            log.error("FileUtil-createDirectories error, runTime=", stopWatch.getTotalTimeMillis(), e);
         } finally {
             if (stopWatch != null) {
-                stopWatch.stop( );
+                stopWatch.stop();
             }
         }
         return false;
@@ -90,22 +90,22 @@ public class FilesServiceImpl implements FilesService {
 
             Path dirPath = Paths.get(path);
 
-            if (!StringUtils.isEmpty(count.trim( ))) {
+            if (!StringUtils.isEmpty(count.trim())) {
                 writer = Files.newBufferedWriter(dirPath, APPEND);
                 writer.write(count);
-                writer.flush( );
-                log.info("FileUtil-write success, runTime=", stopWatch.getTotalTimeMillis( ));
+                writer.flush();
+                log.info("FileUtil-write success, runTime=", stopWatch.getTotalTimeMillis());
                 return true;
             }
         } catch (Exception e) {
-            log.error("FileUtil-write error, runTime=", stopWatch.getTotalTimeMillis( ), e);
+            log.error("FileUtil-write error, runTime=", stopWatch.getTotalTimeMillis(), e);
         } finally {
             try {
                 if (writer != null) {
-                    writer.close( );
+                    writer.close();
                 }
                 if (stopWatch != null) {
-                    stopWatch.stop( );
+                    stopWatch.stop();
                 }
             } catch (IOException e) {
                 log.error("FileUtil-write close error", e);
@@ -124,22 +124,22 @@ public class FilesServiceImpl implements FilesService {
             stopWatch = getWatch("FilesUtilImpl-read");
             Path dirPath = Paths.get(path);
             reader = Files.newBufferedReader(dirPath, StandardCharsets.UTF_8);
-            while ((line = reader.readLine( )) != null) {
-                log.info("FileUtil-read success, runTime=", stopWatch.getTotalTimeMillis( ));
+            while ((line = reader.readLine()) != null) {
+                log.info("FileUtil-read success, runTime=", stopWatch.getTotalTimeMillis());
                 return line;
             }
         } catch (Exception e) {
-            log.error("FileUtil-read error, runTime=", stopWatch.getTotalTimeMillis( ), e);
+            log.error("FileUtil-read error, runTime=", stopWatch.getTotalTimeMillis(), e);
         } finally {
             try {
                 if (reader != null) {
-                    reader.close( );
+                    reader.close();
                 }
                 if (stopWatch != null) {
-                    stopWatch.stop( );
+                    stopWatch.stop();
                 }
             } catch (IOException e) {
-                log.error("FileUtil-write read error, runTime=", stopWatch.getTotalTimeMillis( ), e);
+                log.error("FileUtil-write read error, runTime=", stopWatch.getTotalTimeMillis(), e);
             }
         }
         return null;
@@ -155,10 +155,10 @@ public class FilesServiceImpl implements FilesService {
                 return Files.deleteIfExists(dirPath);
             }
         } catch (Exception e) {
-            log.error("FileUtil-delete error, runTime=", stopWatch.getTotalTimeMillis( ), e);
+            log.error("FileUtil-delete error, runTime=", stopWatch.getTotalTimeMillis(), e);
         } finally {
             if (stopWatch != null) {
-                stopWatch.stop( );
+                stopWatch.stop();
             }
         }
         return false;
@@ -179,7 +179,7 @@ public class FilesServiceImpl implements FilesService {
             log.error("FileUtil-copy error", e);
         } finally {
             if (stopWatch != null) {
-                stopWatch.stop( );
+                stopWatch.stop();
             }
         }
         return false;
@@ -199,8 +199,8 @@ public class FilesServiceImpl implements FilesService {
         Path path = Paths.get(dir.substring(0, 2));
         FileStore fileStore = Files.getFileStore(path);
 
-        if (fileStore.isReadOnly( )) {
-            unallocatedspace = fileStore.getUnallocatedSpace( );
+        if (fileStore.isReadOnly()) {
+            unallocatedspace = fileStore.getUnallocatedSpace();
             if (unallocatedspace <= SPACE_MAX) {
                 throw new IllegalArgumentException("可使用空间不足");
             }
@@ -215,7 +215,7 @@ public class FilesServiceImpl implements FilesService {
      */
     private static StopWatch getWatch(String functionName) {
         stopWatch = new StopWatch(functionName);
-        stopWatch.start( );
+        stopWatch.start();
         return stopWatch;
     }
 

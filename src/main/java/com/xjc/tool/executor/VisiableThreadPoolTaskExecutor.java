@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 @SuppressWarnings("all")
-public class VisiableThreadPoolTaskExecutor extends ThreadPoolTaskExecutor{
+public class VisiableThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
 
     private static final long serialVersionUID = 3389769362011266663L;
 

@@ -51,12 +51,13 @@ public class ExecutorConfig implements AsyncConfigurer {
 
     /**
      * 配置异常处理机制
+     *
      * @return
      */
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return (ex,method,params)->{
-            log.error("异步线程执行失败。方法：[{}],异常信息[{}] : ", method, ex.getMessage(),ex);
+        return (ex, method, params) -> {
+            log.error("异步线程执行失败。方法：[{}],异常信息[{}] : ", method, ex.getMessage(), ex);
         };
     }
 

@@ -12,8 +12,8 @@ import org.springframework.util.StringUtils;
  */
 public class PreconditionsTest {
 
-  public static void main(String[] args) {
-      String str = "message";
-      Preconditions.checkArgument(!StringUtils.isEmpty(str), "param is null");
-  }
+    public static void main(String[] args) {
+        String str = "message";
+        Preconditions.checkArgument(!StringUtils.isEmpty(str), "param is null");
+    }
 }

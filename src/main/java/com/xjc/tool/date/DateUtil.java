@@ -25,8 +25,8 @@ public class DateUtil {
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
 
     static {
-        localDate = LocalDate.now( );
-        localDateTime = LocalDateTime.now( );
+        localDate = LocalDate.now();
+        localDateTime = LocalDateTime.now();
     }
 
     public static LocalDate getLocalDate() {
@@ -111,7 +111,7 @@ public class DateUtil {
      * @return
      */
     public static ZoneId getLocalZoneId() {
-        return ZoneId.systemDefault( );
+        return ZoneId.systemDefault();
     }
 
     /**
@@ -120,8 +120,8 @@ public class DateUtil {
      * @return
      */
     public static String getWeek() {
-        DayOfWeek dayOfWeek = localDate.getDayOfWeek( );
-        return dayOfWeek.toString( );
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return dayOfWeek.toString();
     }
 
     /**
@@ -130,8 +130,8 @@ public class DateUtil {
      * @return
      */
     public static String getMonth() {
-        Month month = localDate.getMonth( );
-        return month.toString( );
+        Month month = localDate.getMonth();
+        return month.toString();
     }
 
     /**
@@ -140,7 +140,7 @@ public class DateUtil {
      * @return
      */
     public static int lengthOfMonth() {
-        return localDate.lengthOfMonth( );
+        return localDate.lengthOfMonth();
     }
 
     /**
@@ -150,9 +150,9 @@ public class DateUtil {
      * @return
      */
     public static String getFirstDayOfMonth(int month) {
-        LocalDate with = LocalDate.now( );
+        LocalDate with = LocalDate.now();
         with = with.withMonth(month);
-        with = with.with(TemporalAdjusters.firstDayOfMonth( ));
+        with = with.with(TemporalAdjusters.firstDayOfMonth());
         return formatOfLocalDate(with, YYYY_MM_DD);
     }
 
@@ -163,9 +163,9 @@ public class DateUtil {
      * @return
      */
     public static String getLastDayOfMonth(int month) {
-        LocalDate with = LocalDate.now( );
+        LocalDate with = LocalDate.now();
         with = with.withMonth(month);
-        with = with.with(TemporalAdjusters.lastDayOfMonth( ));
+        with = with.with(TemporalAdjusters.lastDayOfMonth());
         return formatOfLocalDate(with, YYYY_MM_DD);
     }
 
@@ -175,7 +175,7 @@ public class DateUtil {
      * @return
      */
     public static boolean isLeapYear() {
-        return localDate.isLeapYear( );
+        return localDate.isLeapYear();
     }
 
     /**
@@ -184,7 +184,7 @@ public class DateUtil {
      * @return
      */
     public static boolean isSunday() {
-        return (SUNDAY.toString( )).equals(getWeek( ));
+        return (SUNDAY.toString()).equals(getWeek());
     }
 
     /**

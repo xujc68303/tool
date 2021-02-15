@@ -45,15 +45,15 @@ public class ExpiringMapServiceImpl implements ExpiringMapService {
      * @param expiration 缓存过期时间
      */
     private static void initConfig() {
-        if (expiringMap.isEmpty( )) {
+        if (expiringMap.isEmpty()) {
             synchronized (ExpiringMap.class) {
-                expiringMap = ExpiringMap.builder( )
+                expiringMap = ExpiringMap.builder()
                         .maxSize(maxSize)
                         .expiration(expiration, timeUnit)
-                        .variableExpiration( )
+                        .variableExpiration()
                         // 设置过期策略为创建或更新值后
                         .expirationPolicy(ExpirationPolicy.CREATED)
-                        .build( );
+                        .build();
             }
         }
     }
@@ -73,14 +73,14 @@ public class ExpiringMapServiceImpl implements ExpiringMapService {
 
     @Override
     public void addListener() {
-        if(!expiringMap.isEmpty()){
+        if (!expiringMap.isEmpty()) {
             expiringMap.addAsyncExpirationListener(expirationListener);
         }
     }
 
     @Override
     public void removeListener() {
-        if(!expiringMap.isEmpty()){
+        if (!expiringMap.isEmpty()) {
             expiringMap.removeAsyncExpirationListener(expirationListener);
         }
     }
@@ -91,7 +91,7 @@ public class ExpiringMapServiceImpl implements ExpiringMapService {
             return false;
         }
         long expiration = expiringMap.getExpectedExpiration(k);
-        return System.currentTimeMillis( ) > expiration;
+        return System.currentTimeMillis() > expiration;
     }
 
     @Override
@@ -127,30 +127,30 @@ public class ExpiringMapServiceImpl implements ExpiringMapService {
 
     @Override
     public long getSize() {
-        return expiringMap.size( );
+        return expiringMap.size();
     }
 
     @Override
     public List<String> getKeys() {
-        List<String> result = new ArrayList<>( );
-        expiringMap.entrySet( ).forEach(x -> {
-            result.add(x.getKey( ));
+        List<String> result = new ArrayList<>();
+        expiringMap.entrySet().forEach(x -> {
+            result.add(x.getKey());
         });
         return result;
     }
 
     @Override
     public Map<String, Object> getAll() {
-        Map<String, Object> result = Maps.newLinkedHashMap( );
-        expiringMap.entrySet( ).forEach(x -> {
-            result.put(x.getKey( ), x.getValue( ));
+        Map<String, Object> result = Maps.newLinkedHashMap();
+        expiringMap.entrySet().forEach(x -> {
+            result.put(x.getKey(), x.getValue());
         });
         return result;
     }
 
     @Override
     public void clear() {
-        expiringMap.clear( );
+        expiringMap.clear();
     }
 
 

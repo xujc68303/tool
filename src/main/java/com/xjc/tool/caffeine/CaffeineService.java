@@ -16,19 +16,22 @@ public interface CaffeineService {
 
     /**
      * 缓存数据，旧值被新值替换
-     * @param key key
+     *
+     * @param key   key
      * @param value value
      */
     void put(String key, Object value);
 
     /**
      * 批量缓存数据，旧值被新值替换
+     *
      * @param map map
      */
-    void putAll(Map<String,Object> map);
+    void putAll(Map<String, Object> map);
 
     /**
      * 根据key获取，key为null返回null
+     *
      * @param key key
      * @return value
      */
@@ -36,6 +39,7 @@ public interface CaffeineService {
 
     /**
      * 根据key获取批量，key为null返回null
+     *
      * @param keys keys
      * @return map
      */
@@ -43,12 +47,14 @@ public interface CaffeineService {
 
     /**
      * 根据key删除
+     *
      * @param key key
      */
     void invalidate(String key);
 
     /**
      * 根据key批量删除
+     *
      * @param keys keys
      */
     void invalidateAll(List<String> keys);
@@ -60,12 +66,14 @@ public interface CaffeineService {
 
     /**
      * 获取缓存状态
+     *
      * @return 缓存状态
      */
     CacheStats getStats();
 
     /**
      * 获取缓存长度
+     *
      * @return
      */
     long size();

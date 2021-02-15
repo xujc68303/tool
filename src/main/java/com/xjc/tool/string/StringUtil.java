@@ -40,7 +40,7 @@ public class StringUtil {
      * @return 如果为空，则返回<code>true</code>
      */
     public static boolean isEnpty(String param) {
-        return ((param == null) || (param.length( ) == 0));
+        return ((param == null) || (param.length() == 0));
     }
 
     /**
@@ -55,7 +55,7 @@ public class StringUtil {
      * @return 如果不为空，则返回<code>true<code/>
      */
     public static boolean isNotEnpty(String param) {
-        return ((param != null) && (param.length( ) > 0));
+        return ((param != null) && (param.length() > 0));
     }
 
     /**
@@ -71,7 +71,7 @@ public class StringUtil {
      */
     public static boolean isblank(String param) {
         int length;
-        if ((param == null) || ((length = param.length( )) == 0)) {
+        if ((param == null) || ((length = param.length()) == 0)) {
             return true;
         }
         for (int i = 0; i < length; i++) {
@@ -95,7 +95,7 @@ public class StringUtil {
      */
     public static boolean isNotBlank(String param) {
         int length;
-        if ((param == null) || ((length = param.length( )) == 0)) {
+        if ((param == null) || ((length = param.length()) == 0)) {
             return false;
         }
         for (int i = 0; i < length; i++) {
@@ -179,7 +179,7 @@ public class StringUtil {
      * @return 字符串本身或者指定的默认字符串
      */
     public static String defaultIfEmpty(String str, String defaultStr) {
-        return ((str == null) || (str.length( ) == 0)) ? defaultStr : str;
+        return ((str == null) || (str.length() == 0)) ? defaultStr : str;
     }
 
     /**
@@ -482,7 +482,7 @@ public class StringUtil {
             return EMPTY_STRING;
         }
 
-        int length = str.length( );
+        int length = str.length();
         int start = 0;
         int end = length;
 
@@ -492,7 +492,7 @@ public class StringUtil {
                 while ((start < end) && (Character.isWhitespace(str.charAt(start)))) {
                     start++;
                 }
-            } else if (stripChars.length( ) == 0) {
+            } else if (stripChars.length() == 0) {
                 return str;
             } else {
                 while ((start < end) && (stripChars.indexOf(str.charAt(start)) != -1)) {
@@ -507,7 +507,7 @@ public class StringUtil {
                 while ((start < end) && (Character.isWhitespace(str.charAt(end - 1)))) {
                     end--;
                 }
-            } else if (stripChars.length( ) == 0) {
+            } else if (stripChars.length() == 0) {
                 return str;
             } else {
                 while ((start < end) && (stripChars.indexOf(str.charAt(end - 1)) != -1)) {
@@ -603,7 +603,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isLetter(str.charAt(i))) {
@@ -637,7 +637,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isLetter(str.charAt(i)) && (str.charAt(i) != ' ')) {
@@ -671,7 +671,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isLetterOrDigit(str.charAt(i))) {
@@ -705,7 +705,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isLetterOrDigit(str.charAt(i)) && (str.charAt(i)) != ' ') {
@@ -740,7 +740,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isDigit(str.charAt(i))) {
@@ -775,7 +775,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isDigit(str.charAt(i)) && (str.charAt(i) != ' ')) {
@@ -808,7 +808,7 @@ public class StringUtil {
             return false;
         }
 
-        int length = str.length( );
+        int length = str.length();
 
         for (int i = 0; i < length; i++) {
             if (!Character.isWhitespace(str.charAt(i))) {
@@ -845,7 +845,7 @@ public class StringUtil {
             return str;
         }
 
-        return str.toUpperCase( );
+        return str.toUpperCase();
     }
 
     /**
@@ -868,7 +868,7 @@ public class StringUtil {
             return EMPTY_STRING;
         }
 
-        return str.toLowerCase( );
+        return str.toLowerCase();
     }
 
     /**
@@ -886,14 +886,14 @@ public class StringUtil {
     public static String caitalize(String str) {
         int strLen;
 
-        if ((str == null) || ((strLen = str.length( )) == 0)) {
+        if ((str == null) || ((strLen = str.length()) == 0)) {
             return str;
         }
 
         return new StringBuffer(strLen)
                 .append(Character.toTitleCase(str.charAt(0)))
                 .append(str.substring(1))
-                .toString( );
+                .toString();
     }
 
     /**
@@ -911,14 +911,14 @@ public class StringUtil {
     public static String upcapitalize(String str) {
         int strLen;
 
-        if ((str == null) || ((strLen = str.length( )) == 0)) {
+        if ((str == null) || ((strLen = str.length()) == 0)) {
             return str;
         }
 
         return new StringBuffer(strLen)
                 .append(Character.toLowerCase(str.charAt(0)))
                 .append(str.substring(1))
-                .toString( );
+                .toString();
     }
 
     /**
@@ -936,7 +936,7 @@ public class StringUtil {
     public static String swapCase(String str) {
         int strLen;
 
-        if ((str == null) || ((strLen = str.length( )) == 0)) {
+        if ((str == null) || ((strLen = str.length()) == 0)) {
             return str;
         }
 
@@ -955,7 +955,7 @@ public class StringUtil {
             buffer.append(ch);
         }
 
-        return buffer.toString( );
+        return buffer.toString();
     }
 
     /* =========================================================================== */
@@ -1014,8 +1014,8 @@ public class StringUtil {
                 (arraySize == 0)
                         ? 0
                         : (arraySize
-                        * (((array[0] == null ? 16 : array[0].toString( ).length( )))
-                        + ((separator != null) ? separator.length( ) : 0)));
+                        * (((array[0] == null ? 16 : array[0].toString().length()))
+                        + ((separator != null) ? separator.length() : 0)));
 
         StringBuffer buffer = new StringBuffer(bufSize);
         for (int i = 0; i < arraySize; i++) {
@@ -1026,7 +1026,7 @@ public class StringUtil {
                 buffer.append(array[i]);
             }
         }
-        return buffer.toString( );
+        return buffer.toString();
     }
 
     /**
@@ -1054,18 +1054,18 @@ public class StringUtil {
         // 默认16
         StringBuffer buffer = new StringBuffer(256);
 
-        while (iterator.hasNext( )) {
-            Object obj = iterator.next( );
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
             if (obj != null) {
                 buffer.append(obj);
             }
 
-            if (iterator.hasNext( )) {
+            if (iterator.hasNext()) {
                 buffer.append(separator);
             }
         }
 
-        return buffer.toString( );
+        return buffer.toString();
     }
 
     /* ==================================================================================== */
@@ -1089,7 +1089,7 @@ public class StringUtil {
      * @return 第一个匹配的索引值
      */
     public static int indexOf(String str, char searchChar) {
-        if ((str == null) || (str.length( ) == 0)) {
+        if ((str == null) || (str.length() == 0)) {
             return -1;
         }
         return str.indexOf(searchChar);

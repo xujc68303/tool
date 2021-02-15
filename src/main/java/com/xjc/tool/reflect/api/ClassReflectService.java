@@ -15,6 +15,7 @@ public interface ClassReflectService {
 
     /**
      * 获取本类、父类 字段属性
+     *
      * @param clazz
      * @param accessible
      * @return
@@ -23,6 +24,7 @@ public interface ClassReflectService {
 
     /**
      * 获取本类字段属性
+     *
      * @param clazz
      * @param accessible
      * @return
@@ -31,6 +33,7 @@ public interface ClassReflectService {
 
     /**
      * 获取父类字段属性
+     *
      * @param clazz
      * @param accessible
      * @return

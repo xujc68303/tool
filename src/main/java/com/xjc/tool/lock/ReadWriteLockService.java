@@ -36,20 +36,20 @@ public class ReadWriteLockService {
 
     public boolean increase(Integer recharge) {
         if (recharge != null) {
-            Long reference = getReference( );
-            Integer stamp = getStamp( );
+            Long reference = getReference();
+            Integer stamp = getStamp();
 
             if (money.compareAndSet(reference, reference + recharge, stamp, stamp + 1)) {
                 if (recharge != 0) {
-                    this.surplus = getSurplus( ) + recharge;
+                    this.surplus = getSurplus() + recharge;
                     this.recharge = 0;
 
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace( );
+                        e.printStackTrace();
                     }
-                    log.warn("充值成功！当前余额={}", getSurplus( ));
+                    log.warn("充值成功！当前余额={}", getSurplus());
                     return true;
                 }
             }
@@ -58,14 +58,14 @@ public class ReadWriteLockService {
     }
 
     public boolean minus(Integer minus) {
-        if (getSurplus( ) >= minus) {
-            Long reference = getReference( );
-            Integer stamp = getStamp( );
+        if (getSurplus() >= minus) {
+            Long reference = getReference();
+            Integer stamp = getStamp();
 
-            if (getSurplus( ) != 0) {
+            if (getSurplus() != 0) {
                 if (money.compareAndSet(reference, reference - minus, stamp, stamp - 1)) {
-                    this.surplus = getSurplus( ) - minus;
-                    log.warn("消费成功！当前余额={}", getSurplus( ));
+                    this.surplus = getSurplus() - minus;
+                    log.warn("消费成功！当前余额={}", getSurplus());
                     return true;
                 }
             }
@@ -83,37 +83,37 @@ public class ReadWriteLockService {
     }
 
     public Integer getStamp() {
-        return money.getStamp( );
+        return money.getStamp();
     }
 
     public Long getReference() {
-        return money.getReference( );
+        return money.getReference();
     }
 
     public static void main(String[] args) {
-        ReadWriteLock lock = new ReentrantReadWriteLock( );
+        ReadWriteLock lock = new ReentrantReadWriteLock();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        ReadWriteLockService readWriteLockService = new ReadWriteLockService( );
+        ReadWriteLockService readWriteLockService = new ReadWriteLockService();
         Random buy = new Random(100);
         Random shopp = new Random(130);
 
         for (int i = 0; i < 10; i++) {
             executorService.execute(() -> {
 
-                lock.writeLock( ).lock( );
+                lock.writeLock().lock();
                 try {
                     readWriteLockService.increase(buy.nextInt(100));
 
-                    lock.readLock( ).lock( );
+                    lock.readLock().lock();
                     try {
                         readWriteLockService.minus(shopp.nextInt(130));
                     } catch (Exception e) {
                     } finally {
-                        lock.readLock( ).unlock( );
+                        lock.readLock().unlock();
                     }
                 } catch (Exception e) {
                 } finally {
-                    lock.writeLock( ).unlock( );
+                    lock.writeLock().unlock();
                 }
 
             });

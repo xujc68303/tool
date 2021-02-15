@@ -1,5 +1,6 @@
 package com.xjc.tool.excel.service;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -17,7 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.xjc.tool.date.DateUtil.formatOfLocalDate;
 
@@ -38,27 +42,58 @@ public class ExcelServiceImpl implements ExcelService {
     @Override
     public void export(List<Object> data, Class<? extends BaseRowModel> clazz, ExcelTypeEnum excelTypeEnum,
                        HttpServletResponse response, String fileName) throws IOException {
-        String fileType = excelTypeEnum.getValue( );
+        String fileType = excelTypeEnum.getValue();
         fileName = correction(fileName);
-        response.setHeader("Content-Disposition", "attachment;fileName=" + fileName + getFileName( ) + fileType);
+        response.setHeader("Content-Disposition", "attachment;fileName=" + fileName + getFileName() + fileType);
         response.setContentType("multipart/form-data");
         response.setCharacterEncoding(UTF8);
-        ServletOutputStream outputStream = response.getOutputStream( );
+        ServletOutputStream outputStream = response.getOutputStream();
         ExcelWriter excelWriter = new ExcelWriter(outputStream, excelTypeEnum);
         excelWriter.write(data, new Sheet(1, 0, clazz));
-        excelWriter.finish( );
-        outputStream.flush( );
+        excelWriter.finish();
+        outputStream.flush();
         log.info("Excel导出完成");
     }
 
     @Override
+    public void export(Map<Object, Object> data, Class<?> clazz, ExcelTypeEnum excelTypeEnum, HttpServletResponse response, String fileName) throws IOException {
+        String fileType = excelTypeEnum.getValue();
+        fileName = correction(fileName);
+        response.setHeader("Content-Disposition", "attachment;fileName=" + fileName + getFileName() + fileType);
+        response.setContentType("multipart/form-data");
+        response.setCharacterEncoding(UTF8);
+        ServletOutputStream outputStream = response.getOutputStream();
+        EasyExcel.write(outputStream).head(buildHead(data.keySet())).sheet("模板").doWrite(buildData((List<Object>)data.values()));
+
+    }
+
+    @Override
     public List<? extends BaseRowModel> upload(MultipartFile file, Class<? extends BaseRowModel> clazz, Class<?> dbHandle) throws IOException {
-        InputStream inputStream = file.getInputStream( );
-        ExcelReadListener<ExcelUploadModel> excelReadListener = new ExcelReadListener<>( );
+        InputStream inputStream = file.getInputStream();
+        ExcelReadListener<ExcelUploadModel> excelReadListener = new ExcelReadListener<>();
         ExcelReader reader = new ExcelReader(inputStream, null, excelReadListener);
         reader.read(new Sheet(1, 1, clazz));
         log.info("Excel解析完成");
-        return excelReadListener.getData( );
+        return excelReadListener.getData();
+    }
+
+    @Override
+    public ExcelReadListener<ExcelUploadModel> uploadNew(MultipartFile file, Class<?> clazz, Class<?> db) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        String originalFilename = file.getOriginalFilename();
+        assert originalFilename != null;
+        String type = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        if(!type.equals("xlsx") || !type.equals("xls")){
+            throw new IllegalArgumentException("file type error");
+        }
+        ExcelReadListener<ExcelUploadModel> excelReadListener = null;
+        try {
+            excelReadListener = new ExcelReadListener<>();
+            EasyExcel.read(inputStream, excelReadListener).sheet(0).doRead();
+        } finally {
+            inputStream.close();
+        }
+        return null;
     }
 
     /**
@@ -79,7 +114,25 @@ public class ExcelServiceImpl implements ExcelService {
      * @throws UnsupportedEncodingException
      */
     private String correction(String fileName) throws UnsupportedEncodingException {
-        return new String(fileName.trim( ).getBytes(UTF8), "iso8859-1");
+        return new String(fileName.trim().getBytes(UTF8), "iso8859-1");
+    }
+
+    private List<List<String>> buildHead(Set<Object> keys) {
+        List<List<String>> result = new LinkedList<>();
+        keys.forEach(k -> {
+            List<String> headers = new LinkedList<>();
+            headers.add((String) k);
+            result.add(headers);
+        });
+        return result;
+    }
+
+    private List<String> buildData(List<Object> data){
+        List<String> datas = new LinkedList<>();
+        data.forEach(d -> {
+            datas.add((String) d);
+        });
+        return datas;
     }
 
 }

@@ -24,7 +24,7 @@ public class ClassReflectServiceImpl implements ClassReflectService {
 
     @Override
     public Multimap<Object, Map<Object, Object>> getClazzStructureFields(Object clazz, boolean accessible) {
-        Multimap<Object, Map<Object, Object>> result = HashMultimap.create( );
+        Multimap<Object, Map<Object, Object>> result = HashMultimap.create();
         Map<Object, Object> superMap = getSuperFields(clazz, accessible);
         Map<Object, Object> subMap = getClazzFields(clazz, accessible);
         result.putAll("super", Collections.singleton(superMap));
@@ -43,11 +43,11 @@ public class ClassReflectServiceImpl implements ClassReflectService {
     }
 
     private Field[] doGetSuperFields(Object clazz) {
-        return clazz.getClass( ).getSuperclass( ).getDeclaredFields( );
+        return clazz.getClass().getSuperclass().getDeclaredFields();
     }
 
     private Field[] doGetClassFields(Object clazz) {
-        return clazz.getClass( ).getDeclaredFields( );
+        return clazz.getClass().getDeclaredFields();
     }
 
     private Map<Object, Object> doGetFieldResult(Field[] fields, Object clazz, boolean accessible) {
@@ -56,15 +56,15 @@ public class ClassReflectServiceImpl implements ClassReflectService {
             try {
                 if (accessible) {
                     f.setAccessible(true);
-                    result.put(f.getName( ), f.get(clazz));
+                    result.put(f.getName(), f.get(clazz));
                 } else {
-                    int modifiers = f.getModifiers( );
+                    int modifiers = f.getModifiers();
                     if (modifiers == 1 || modifiers == 4) {
-                        result.put(f.getName( ), null);
+                        result.put(f.getName(), null);
                     }
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace( );
+                e.printStackTrace();
             }
         });
         return result;

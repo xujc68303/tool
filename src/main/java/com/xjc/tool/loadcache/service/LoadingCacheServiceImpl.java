@@ -70,15 +70,15 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
     static {
         synchronized (LoadingCache.class) {
             loadingCache = CacheBuilder
-                    .newBuilder( )
-                    .recordStats( )
+                    .newBuilder()
+                    .recordStats()
                     .maximumSize(MAX_SIZE)
                     .initialCapacity(INITI_ALCAPA_CITY)
                     .refreshAfterWrite(REFRESH, UNIT)
                     .removalListener((monitor) -> {
-                        log.info("key:{}被移除", monitor.getKey( ));
+                        log.info("key:{}被移除", monitor.getKey());
                     })
-                    .build(new CacheLoader<String, Object>( ) {
+                    .build(new CacheLoader<String, Object>() {
 
                         @Override
                         public Object load(@NotNull String key) throws Exception {
@@ -93,7 +93,7 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
                         }
                     });
 
-            asyncRefresh( );
+            asyncRefresh();
         }
     }
 
@@ -102,9 +102,9 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
         @Override
         public Object call() throws Exception {
             String k = threadLocal.get().toString();
-            System.out.println("begin to mock query db..."+ k);
+            System.out.println("begin to mock query db..." + k);
             Thread.sleep(2000);
-            System.out.println("success to mock query db..."+ k);
+            System.out.println("success to mock query db..." + k);
             threadLocal.remove();
             return UUID.randomUUID();
         }
@@ -113,7 +113,7 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
 
     @Override
     public void run() {
-        this.asMap( ).keySet( ).forEach(k -> loadingCache.refresh(k));
+        this.asMap().keySet().forEach(k -> loadingCache.refresh(k));
     }
 
     /**
@@ -121,9 +121,9 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
      */
     private static void asyncRefresh() {
         try {
-            scheduledexecutorservice.scheduleAtFixedRate(new LoadingCacheServiceImpl( ), 0, REFRESH, UNIT);
+            scheduledexecutorservice.scheduleAtFixedRate(new LoadingCacheServiceImpl(), 0, REFRESH, UNIT);
         } catch (RuntimeException e) {
-            scheduledexecutorservice.shutdown( );
+            scheduledexecutorservice.shutdown();
         }
     }
 
@@ -141,7 +141,7 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
 
     @Override
     public boolean put(String key, Object value) {
-        Map<String, Object> result = Maps.newLinkedHashMap( );
+        Map<String, Object> result = Maps.newLinkedHashMap();
         result.put(key, value);
         return this.putAll(result);
     }
@@ -165,8 +165,8 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
 
     @Override
     public Map<String, Object> asMap() {
-        Map<String, Object> result = Maps.newLinkedHashMap( );
-        loadingCache.asMap( ).forEach(result::put);
+        Map<String, Object> result = Maps.newLinkedHashMap();
+        loadingCache.asMap().forEach(result::put);
         return result;
     }
 
@@ -184,12 +184,12 @@ public class LoadingCacheServiceImpl extends Thread implements LoadingCacheServi
 
     @Override
     public long size() {
-        return loadingCache.size( );
+        return loadingCache.size();
     }
 
     @Override
     public boolean clear() {
-        loadingCache.invalidateAll( );
+        loadingCache.invalidateAll();
         return true;
     }
 }

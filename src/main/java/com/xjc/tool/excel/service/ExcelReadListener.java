@@ -1,11 +1,14 @@
 package com.xjc.tool.excel.service;
 
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
-import org.springframework.lang.NonNull;
+import com.alibaba.excel.metadata.Cell;
+import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.CellExtra;
+import com.xjc.tool.excel.object.FieldMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Version 1.0
@@ -16,13 +19,18 @@ import java.util.List;
  */
 public class ExcelReadListener<ExcelUploadModel> extends AnalysisEventListener<ExcelUploadModel> {
 
-    @NonNull
     private String fileName;
 
-    @NonNull
     private String type;
 
-    private volatile List<ExcelUploadModel> data = new ArrayList<>( );
+    private List<ExcelUploadModel> listData = new ArrayList<>();
+
+    private Map<Object, FieldMeta> header = new HashMap<>();
+
+    private int MAX_COLUMN_SIZE = 50;
+
+    private int Batch_COUNT = 10;
+
 
     public ExcelReadListener() {
 
@@ -33,17 +41,60 @@ public class ExcelReadListener<ExcelUploadModel> extends AnalysisEventListener<E
         this.type = type;
     }
 
+
+    void saveData() {
+        // 存储DB
+        listData.clear();
+    }
+
+    @Override
+    public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
+        Map<Integer, Cell> rowCell = context.readRowHolder().getCellMap();
+        if (context.readRowHolder().getRowIndex() == 0) {
+            if (headMap.values().contains(null)) {
+                throw new RuntimeException("表头有null");
+            }
+            if (rowCell.size() > MAX_COLUMN_SIZE) {
+                throw new RuntimeException("列数超过50");
+            }
+
+            for(Map.Entry<Integer, Cell> map : rowCell.entrySet()){
+                CellData cellData = (CellData) map.getValue();
+                FieldMeta fieldMeta = new FieldMeta(cellData.getStringValue(), cellData.getType().name());
+                header.put(map.getKey(), fieldMeta);
+            }
+        }
+        validateHeadNameRepeat();
+    }
+
     @Override
     public void invoke(ExcelUploadModel data, AnalysisContext context) {
-        // 此方法可用于数据到达某个数量后 分批落库
-
+        // 此方法可用于数据到达某个数量后 分批落库, 防止数据几万条数据OOM
+        listData.clear();
+        listData.add(data);
+        if(listData.size() >= Batch_COUNT){
+            if(listData.contains(null)){
+                throw new RuntimeException("数据有null");
+            }
+        }
+        saveData();
     }
 
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        // 此方法可用于最终操作
-        // 解析Excel后落库
+        // 此方法可用于最终操作, 解析Excel后落库
+
+
+    }
+
+    @Override
+    public void extra(CellExtra extra, AnalysisContext context) {
+        // 检查单元格
+        if(CellExtraTypeEnum.MERGE == extra.getType()){
+            throw new RuntimeException("第"+ extra.getFirstColumnIndex() + "列，" + "第"+ extra.getLastColumnIndex() + "列"
+                    + "第" + extra.getFirstRowIndex() + "行 --> 第" + extra.getFirstRowIndex() + "行， 存在合并单元格");
+        }
     }
 
     public String getFileName() {
@@ -63,11 +114,27 @@ public class ExcelReadListener<ExcelUploadModel> extends AnalysisEventListener<E
     }
 
     public List<ExcelUploadModel> getData() {
-        return data;
+        return listData;
     }
 
     @Override
     public String toString() {
-        return super.toString( );
+        return super.toString();
     }
+
+    /**
+     * 检查表头名称不重复
+     */
+    private void validateHeadNameRepeat(){
+        Set<Object> fidldNameSet = new HashSet<>();
+        for(FieldMeta fieldMeta : header.values()){
+            if(fidldNameSet.contains(fieldMeta.getComment())){
+                throw new RuntimeException("表头名称" + fieldMeta.getComment() + "不可以重复");
+            } else {
+                fidldNameSet.add(fieldMeta.getComment());
+            }
+        }
+    }
+
+
 }

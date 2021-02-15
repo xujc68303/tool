@@ -43,7 +43,7 @@ public class FairSyncLock implements Runnable {
         } catch (Exception e) {
             log.error("FairSyncLock error", e);
         } finally {
-            lock.unlock( );
+            lock.unlock();
         }
     }
 
@@ -52,8 +52,8 @@ public class FairSyncLock implements Runnable {
         FairSyncLock t1 = new FairSyncLock("t1", lock);
         FairSyncLock t2 = new FairSyncLock("t2", lock);
         FairSyncLock t3 = new FairSyncLock("t3", lock);
-        t1.run( );
-        t2.run( );
-        t3.run( );
+        t1.run();
+        t2.run();
+        t3.run();
     }
 }

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @SuppressWarnings("all")
-public class CaffeineServiceImpl implements CaffeineService{
+public class CaffeineServiceImpl implements CaffeineService {
 
     private long maximumSize = 256L;
 
@@ -39,20 +37,20 @@ public class CaffeineServiceImpl implements CaffeineService{
     private Cache<String, Object> cache;
 
     @PostConstruct
-    private void init(){
+    private void init() {
         cache = Caffeine.newBuilder()
                 .recordStats()
                 .maximumSize(maximumSize)
                 .initialCapacity(initialCapacity)
                 .refreshAfterWrite(asyncWrite, TimeUnit.SECONDS)
-                .removalListener(new RemovalListener<String, Object>( ) {
+                .removalListener(new RemovalListener<String, Object>() {
 
                     @Override
                     public void onRemoval(@Nullable String key, @Nullable Object value, @NonNull RemovalCause cause) {
                         log.warn("key:{}被移除， cause={}", key, cause);
                     }
                 })
-                .writer(new CacheWriter<String, Object>( ) {
+                .writer(new CacheWriter<String, Object>() {
 
                     @Override
                     public void write(@NonNull String key, @NonNull Object value) {
@@ -63,7 +61,7 @@ public class CaffeineServiceImpl implements CaffeineService{
                     public void delete(@NonNull String key, @Nullable Object value, @NonNull RemovalCause removalCause) {
                         log.warn("key={}, cause={}, CacheWriter delete", key, removalCause);
                     }
-                }).build(new CacheLoader<String ,Object>(){
+                }).build(new CacheLoader<String, Object>() {
 
                     @Nullable
                     @Override

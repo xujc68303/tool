@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ToolAplication {
 
-  public static void main(String[] args) {
-      SpringApplication.run(ToolAplication.class,args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(ToolAplication.class, args);
+    }
 }
