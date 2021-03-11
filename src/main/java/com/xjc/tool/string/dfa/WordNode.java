@@ -33,7 +33,7 @@ public class WordNode {
 	 */
 	private WordNode addSubNode(final WordNode subNode) {
 		if (subNodes == null)
-			subNodes = new LinkedList<WordNode>();
+			subNodes = new LinkedList<>();
 		subNodes.add(subNode);
 		return subNode;
 	}
@@ -59,9 +59,7 @@ public class WordNode {
 	}
 
 	public WordNode querySub(final int value) {
-		if (subNodes == null) {
-			return null;
-		}
+		if (subNodes == null) return null;
 		for (WordNode subNode : subNodes) {
 			if (subNode.value == value)
 				return subNode;

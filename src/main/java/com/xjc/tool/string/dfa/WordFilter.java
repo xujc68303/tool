@@ -14,10 +14,25 @@ import java.util.*;
  */
 public class WordFilter {
 
-    private static final FilterSet set = new FilterSet(); // 存储首字
-    private static final Map<Integer, WordNode> nodes = new HashMap<Integer, WordNode>(1024, 1); // 存储节点
-    private static final Set<Integer> stopwdSet = new HashSet<>(); // 停顿词
-    private static final char SIGN = '*'; // 敏感词过滤替换
+    /**
+     * 存储首字
+     */
+    private static final FilterSet set = new FilterSet();
+
+    /**
+     * 存储节点
+     */
+    private static final Map<Integer, WordNode> nodes = new HashMap<>(1024, 1);
+
+    /**
+     * 停顿词
+     */
+    private static final Set<Integer> stopwdSet = new HashSet<>();
+
+    /**
+     * 敏感词过滤替换
+     */
+    private static final char SIGN = '*';
 
     static {
         try {
@@ -27,8 +42,10 @@ public class WordFilter {
         }
     }
 
+    /**
+     * 初始化敏感词库
+     */
     private static void init() {
-        // 获取敏感词
         addSensitiveWord(readWordFromFile("\\filter\\wd.txt"));
         addStopWord(readWordFromFile("\\filter\\stopwd.txt"));
     }
@@ -57,6 +74,7 @@ public class WordFilter {
                 if (br != null)
                     br.close();
             } catch (IOException e) {
+                //skip
             }
         }
         return words;
@@ -89,12 +107,14 @@ public class WordFilter {
             char[] chs;
             int fchar;
             int lastIndex;
-            WordNode fnode; // 首字母节点
+            // 首字母节点
+            WordNode fnode;
             for (String curr : words) {
                 chs = curr.toCharArray();
                 fchar = charConvert(chs[0]);
-                if (!set.contains(fchar)) {// 没有首字定义
-                    set.add(fchar);// 首字标志位 可重复add,反正判断了，不重复了
+                // 没有首字定义
+                if (!set.contains(fchar)) {
+                    set.add(fchar);
                     fnode = new WordNode(fchar, chs.length == 1);
                     nodes.put(fchar, fnode);
                 } else {
@@ -120,8 +140,10 @@ public class WordFilter {
         if (set != null && nodes != null) {
             char[] chs = src.toCharArray();
             int length = chs.length;
-            int currc; // 当前检查的字符
-            int cpcurrc; // 当前检查字符的备份
+            // 当前检查的字符
+            int currc;
+            // 当前检查字符的备份
+            int cpcurrc;
             int k;
             WordNode node;
             for (int i = 0; i < length; i++) {
@@ -129,19 +151,20 @@ public class WordFilter {
                 if (!set.contains(currc)) {
                     continue;
                 }
-                node = nodes.get(currc);// 日 2
-                if (node == null)// 其实不会发生，习惯性写上了
+                node = nodes.get(currc);
+                if (node == null)
                     continue;
                 boolean couldMark = false;
                 int markNum = -1;
-                if (node.isLast()) {// 单字匹配（日）
+                // 单字匹配
+                if (node.isLast()) {
                     couldMark = true;
                     markNum = 0;
                 }
-                // 继续匹配（日你/日你妹），以长的优先
-                // 你-3 妹-4 夫-5
+
                 k = i;
-                cpcurrc = currc; // 当前字符的拷贝
+                // copy
+                cpcurrc = currc;
                 for (; ++k < length; ) {
                     int temp = charConvert(chs[k]);
                     if (temp == cpcurrc)
@@ -149,11 +172,11 @@ public class WordFilter {
                     if (stopwdSet != null && stopwdSet.contains(temp))
                         continue;
                     node = node.querySub(temp);
-                    if (node == null)// 没有了
+                    if (node == null)
                         break;
                     if (node.isLast()) {
                         couldMark = true;
-                        markNum = k - i;// 3-2
+                        markNum = k - i;
                     }
                     cpcurrc = temp;
                 }
@@ -166,7 +189,6 @@ public class WordFilter {
             }
             return new String(chs);
         }
-
         return src;
     }
 
@@ -180,8 +202,10 @@ public class WordFilter {
         if (set != null && nodes != null) {
             char[] chs = src.toCharArray();
             int length = chs.length;
-            int currc; // 当前检查的字符
-            int cpcurrc; // 当前检查字符的备份
+            // 当前检查的字符
+            int currc;
+            // 当前检查字符的备份
+            int cpcurrc;
             int k;
             WordNode node;
             for (int i = 0; i < length; i++) {
@@ -189,15 +213,15 @@ public class WordFilter {
                 if (!set.contains(currc)) {
                     continue;
                 }
-                node = nodes.get(currc);// 日 2
-                if (node == null)// 其实不会发生，习惯性写上了
+                node = nodes.get(currc);
+                if (node == null)
                     continue;
                 boolean couldMark = false;
-                if (node.isLast()) {// 单字匹配（日）
+                // 单字匹配
+                if (node.isLast()) {
                     couldMark = true;
                 }
-                // 继续匹配（日你/日你妹），以长的优先
-                // 你-3 妹-4 夫-5
+                // 继续匹配，以长的优先
                 k = i;
                 cpcurrc = currc;
                 for (; ++k < length; ) {
@@ -207,7 +231,7 @@ public class WordFilter {
                     if (stopwdSet != null && stopwdSet.contains(temp))
                         continue;
                     node = node.querySub(temp);
-                    if (node == null)// 没有了
+                    if (node == null)
                         break;
                     if (node.isLast()) {
                         couldMark = true;
@@ -219,7 +243,6 @@ public class WordFilter {
                 }
             }
         }
-
         return false;
     }
 
@@ -241,10 +264,7 @@ public class WordFilter {
      * @return
      */
     public static <T> boolean isEmpty(final Collection<T> col) {
-        if (col == null || col.isEmpty()) {
-            return true;
-        }
-        return false;
+        return col == null || col.isEmpty();
     }
 
     public static void main(String[] args) {

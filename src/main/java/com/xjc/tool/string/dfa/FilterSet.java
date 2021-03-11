@@ -1,11 +1,5 @@
 package com.xjc.tool.string.dfa;
 
-/**
- * 创建时间：2016年8月30日 下午2:57:10
- * 
- * @author andy
- * @version 2.2
- */
 public class FilterSet{
 
 	private final long[] elements;
@@ -27,10 +21,6 @@ public class FilterSet{
         return (elements[no >>> 6] & (1L << (no & 63))) != 0;
     }
 
-	/**
-	 * 目前没有去维护size，每次都是去计算size
-	 * @return
-	 */
 	public int size() {
 		int size = 0;
 		for (long element : elements)
