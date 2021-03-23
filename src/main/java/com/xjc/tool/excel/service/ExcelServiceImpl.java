@@ -63,7 +63,7 @@ public class ExcelServiceImpl implements ExcelService {
         response.setContentType("multipart/form-data");
         response.setCharacterEncoding(UTF8);
         ServletOutputStream outputStream = response.getOutputStream();
-        EasyExcel.write(outputStream).head(buildHead(data.keySet())).sheet("模板").doWrite(buildData((List<Object>)data.values()));
+        EasyExcel.write(outputStream).head(buildHead(data.keySet())).sheet("模板").doWrite(buildData((List<Object>) data.values()));
 
     }
 
@@ -83,7 +83,7 @@ public class ExcelServiceImpl implements ExcelService {
         String originalFilename = file.getOriginalFilename();
         assert originalFilename != null;
         String type = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-        if(!type.equals("xlsx") || !type.equals("xls")){
+        if (!type.equals("xlsx") || !type.equals("xls")) {
             throw new IllegalArgumentException("file type error");
         }
         ExcelReadListener<ExcelUploadModel> excelReadListener = null;
@@ -127,7 +127,7 @@ public class ExcelServiceImpl implements ExcelService {
         return result;
     }
 
-    private List<String> buildData(List<Object> data){
+    private List<String> buildData(List<Object> data) {
         List<String> datas = new LinkedList<>();
         data.forEach(d -> {
             datas.add((String) d);
