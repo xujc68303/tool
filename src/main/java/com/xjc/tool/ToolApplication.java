@@ -5,15 +5,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @Version 1.0
- * @ClassName ToolAplication
+ * @ClassName ToolApplication
  * @Author jiachenXu
  * @Date 2021/1/16
  * @Description
  */
 @SpringBootApplication
-public class ToolAplication {
+public class ToolApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ToolAplication.class, args);
+        SpringApplication.run(ToolApplication.class, args);
     }
 }
