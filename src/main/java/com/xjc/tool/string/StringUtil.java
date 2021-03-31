@@ -39,7 +39,7 @@ public class StringUtil {
      * @param param 要检查的字符串
      * @return 如果为空，则返回<code>true</code>
      */
-    public static boolean isEnpty(String param) {
+    public static boolean isEmpty(String param) {
         return ((param == null) || (param.length() == 0));
     }
 
@@ -54,7 +54,7 @@ public class StringUtil {
      * @param param 要检查的字符串
      * @return 如果不为空，则返回<code>true<code/>
      */
-    public static boolean isNotEnpty(String param) {
+    public static boolean isNotEmpty(String param) {
         return ((param != null) && (param.length() > 0));
     }
 
@@ -69,7 +69,7 @@ public class StringUtil {
      * @param param 要检查的字符串
      * @return 如果为空白，则返回<code>true<code/>
      */
-    public static boolean isblank(String param) {
+    public static boolean isBlank(String param) {
         int length;
         if ((param == null) || ((length = param.length()) == 0)) {
             return true;
@@ -196,7 +196,7 @@ public class StringUtil {
      * @return 字符串本身或者空字符串<code>""</code>
      */
     public static String defaultIfBlank(String str) {
-        return isblank(str) ? EMPTY_STRING : str;
+        return isBlank(str) ? EMPTY_STRING : str;
     }
 
     /**
@@ -214,7 +214,7 @@ public class StringUtil {
      * @return 字符串本身或者指定的默认字符串
      */
     public static String defaultIfBlank(String str, String defaultStr) {
-        return isblank(str) ? defaultStr : str;
+        return isBlank(str) ? defaultStr : str;
     }
 
     /* ============================================================================== */
@@ -488,7 +488,7 @@ public class StringUtil {
 
         // 扫描字符串头部
         if (mode <= 0) {
-            if (isblank(stripChars)) {
+            if (isBlank(stripChars)) {
                 while ((start < end) && (Character.isWhitespace(str.charAt(start)))) {
                     start++;
                 }
@@ -503,7 +503,7 @@ public class StringUtil {
 
         // 扫描字符串尾部
         if (mode >= 0) {
-            if (isblank(stripChars)) {
+            if (isBlank(stripChars)) {
                 while ((start < end) && (Character.isWhitespace(str.charAt(end - 1)))) {
                     end--;
                 }
@@ -841,7 +841,7 @@ public class StringUtil {
      * @return 大写字符串，如果原字符串为<code>null</code>，则返回<code>null</code>
      */
     public static String toUpperCase(String str) {
-        if (isEnpty(str)) {
+        if (isBlank(str)) {
             return str;
         }
 
@@ -864,7 +864,7 @@ public class StringUtil {
      * @return 大写字符串，如果原字符串为<code>null</code>，则返回<code>null</code>
      */
     public static String toLowerCase(String str) {
-        if (isEnpty(str)) {
+        if (isBlank(str)) {
             return EMPTY_STRING;
         }
 
