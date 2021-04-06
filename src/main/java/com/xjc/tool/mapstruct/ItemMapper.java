@@ -4,7 +4,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Version 1.0
@@ -25,12 +24,10 @@ public interface ItemMapper extends ObjectConverterMapper<Item1, Item2> {
     Item1 from(Item2 source);
 
     @Override
-    default List<Item2> toList(List<Item1> source) {
-        return source.stream().map(ItemMapper.INSTANCE::to).collect(Collectors.toList());
-    }
+    List<Item2> toList(List<Item1> source);
 
     @Override
-    default List<Item1> fromList(List<Item2> target) {
-        return target.stream().map(ItemMapper.INSTANCE::from).collect(Collectors.toList());
-    }
+    List<Item1> fromList(List<Item2> target);
+
+
 }
