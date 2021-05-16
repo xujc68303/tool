@@ -1,6 +1,10 @@
 package com.xjc.tool.string;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @Version 1.0
@@ -1066,6 +1070,10 @@ public class StringUtil {
         }
 
         return buffer.toString();
+    }
+
+    public static String parseListToStr(List<String> list, String separator) {
+        return list.stream().map(String::valueOf).collect(Collectors.joining(separator));
     }
 
     /* ==================================================================================== */

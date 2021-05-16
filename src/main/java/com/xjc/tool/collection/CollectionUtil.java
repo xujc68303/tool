@@ -7,7 +7,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -167,13 +168,21 @@ public class CollectionUtil {
                         return input - i;
                     }
                 };
+            case MULTIPLY:
+                return new Function<Integer, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer apply(@Nullable Integer input) {
+                        return input * i;
+                    }
+                };
             default:
                 return null;
         }
     }
 
     enum Operator {
-        PLUS, SUBTRACT
+        PLUS, SUBTRACT, MULTIPLY
     }
 
 
