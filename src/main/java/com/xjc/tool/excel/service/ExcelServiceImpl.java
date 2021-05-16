@@ -1,11 +1,13 @@
 package com.xjc.tool.excel.service;
 
+import cn.hutool.core.util.URLUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.xjc.tool.date.DateUtil;
 import com.xjc.tool.excel.api.ExcelService;
 import com.xjc.tool.excel.object.ExcelUploadModel;
@@ -41,30 +43,39 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     public void export(List<Object> data, Class<? extends BaseRowModel> clazz, ExcelTypeEnum excelTypeEnum,
-                       HttpServletResponse response, String fileName) throws IOException {
-        String fileType = excelTypeEnum.getValue();
-        fileName = correction(fileName);
-        response.setHeader("Content-Disposition", "attachment;fileName=" + fileName + getFileName() + fileType);
-        response.setContentType("multipart/form-data");
-        response.setCharacterEncoding(UTF8);
-        ServletOutputStream outputStream = response.getOutputStream();
-        ExcelWriter excelWriter = new ExcelWriter(outputStream, excelTypeEnum);
-        excelWriter.write(data, new Sheet(1, 0, clazz));
-        excelWriter.finish();
-        outputStream.flush();
-        log.info("Excel导出完成");
+                       HttpServletResponse response, String fileName) {
+
+        try (ServletOutputStream outputStream = response.getOutputStream()){
+            String fileType = excelTypeEnum.getValue();
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLUtil.encode(fileName) + getFileName() + fileType);
+            response.setContentType("multipart/form-data");
+            response.setCharacterEncoding(UTF8);
+            ExcelWriter excelWriter = new ExcelWriter(outputStream, excelTypeEnum);
+            excelWriter.write(data, new Sheet(1, 0, clazz));
+            excelWriter.finish();
+            outputStream.flush();
+            log.info("Excel导出完成");
+        }catch (IOException e){
+            log.error("excel old export error", e);
+        }
     }
 
     @Override
-    public void export(Map<Object, Object> data, Class<?> clazz, ExcelTypeEnum excelTypeEnum, HttpServletResponse response, String fileName) throws IOException {
-        String fileType = excelTypeEnum.getValue();
-        fileName = correction(fileName);
-        response.setHeader("Content-Disposition", "attachment;fileName=" + fileName + getFileName() + fileType);
-        response.setContentType("multipart/form-data");
-        response.setCharacterEncoding(UTF8);
-        ServletOutputStream outputStream = response.getOutputStream();
-        EasyExcel.write(outputStream).head(buildHead(data.keySet())).sheet("模板").doWrite(buildData((List<Object>) data.values()));
-
+    public void export(Map<Object, Object> data, Class<?> clazz, ExcelTypeEnum excelTypeEnum,
+                       HttpServletResponse response, String fileName, String sheetName) {
+        try (ServletOutputStream outputStream = response.getOutputStream()) {
+            String fileType = excelTypeEnum.getValue();
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLUtil.encode(fileName) + getFileName() + fileType);
+            response.setContentType("multipart/form-data");
+            response.setCharacterEncoding(UTF8);
+            EasyExcel.write(outputStream)
+                    .head(buildHead(data.keySet()))
+                    .sheet(sheetName)
+                    .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                    .doWrite(buildData((List<Object>) data.values()));
+        } catch (IOException e) {
+            log.error("excel export error", e);
+        }
     }
 
     @Override
@@ -104,17 +115,6 @@ public class ExcelServiceImpl implements ExcelService {
      */
     private static String getFileName() {
         return formatOfLocalDate(DateUtil.YYYY_MM_DD);
-    }
-
-    /**
-     * 防止文件名称乱码
-     *
-     * @param fileName
-     * @return
-     * @throws UnsupportedEncodingException
-     */
-    private String correction(String fileName) throws UnsupportedEncodingException {
-        return new String(fileName.trim().getBytes(UTF8), "iso8859-1");
     }
 
     private List<List<String>> buildHead(Set<Object> keys) {

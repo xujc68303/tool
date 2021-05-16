@@ -30,7 +30,7 @@ public interface ExcelService {
      */
     @Deprecated
     void export(List<Object> data, Class<? extends BaseRowModel> clazz, ExcelTypeEnum excelTypeEnum,
-                HttpServletResponse response, String fileName) throws IOException;
+                HttpServletResponse response, String fileName);
 
     /**
      * 文件导出为Excel
@@ -40,9 +40,10 @@ public interface ExcelService {
      * @param excelTypeEnum 导出格式
      * @param response      response
      * @param fileName      文件名称
+     * @param sheetName     模板名称
      */
     void export(Map<Object, Object> data, Class<?> clazz, ExcelTypeEnum excelTypeEnum,
-                HttpServletResponse response, String fileName) throws IOException;
+                HttpServletResponse response, String fileName, String sheetName);
 
     /**
      * 解析Excel上传
