@@ -17,7 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <junit.version>4.12</junit.version>
-        <hutool.version>5.5.1</hutool.version>
+        <hutool.version>5.6.5</hutool.version>
         <easyexcel.version>2.2.7</easyexcel.version>
         <jetbrains.version>18.0.0</jetbrains.version>
         <expiringmap.version>0.5.9</expiringmap.version>

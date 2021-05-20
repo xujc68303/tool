@@ -43,7 +43,7 @@ public interface ExcelService {
      * @param sheetName     模板名称
      */
     void export(Map<Object, Object> data, Class<?> clazz, ExcelTypeEnum excelTypeEnum,
-                HttpServletResponse response, String fileName, String sheetName);
+                     HttpServletResponse response, String fileName, String sheetName);
 
     /**
      * 解析Excel上传
@@ -57,5 +57,10 @@ public interface ExcelService {
     List<? extends BaseRowModel> upload(MultipartFile file, Class<? extends BaseRowModel> clazz, Class<?> dbHandle)
             throws IOException;
 
+    @Deprecated
     ExcelReadListener<ExcelUploadModel> uploadNew(MultipartFile file, Class<?> clazz, Class<?> db) throws IOException;
+
+    List<?> syncUpLoad(MultipartFile file, Class<?> header) throws IOException;
+
+    Map<String, List<ExcelUploadModel>> asyncUpLoad(MultipartFile file, Class<?> header) throws IOException;
 }

@@ -1,5 +1,6 @@
 package com.xjc.tool.excel.service;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.URLUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
@@ -17,13 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.xjc.tool.date.DateUtil.formatOfLocalDate;
 
@@ -45,7 +43,7 @@ public class ExcelServiceImpl implements ExcelService {
     public void export(List<Object> data, Class<? extends BaseRowModel> clazz, ExcelTypeEnum excelTypeEnum,
                        HttpServletResponse response, String fileName) {
 
-        try (ServletOutputStream outputStream = response.getOutputStream()){
+        try (ServletOutputStream outputStream = response.getOutputStream()) {
             String fileType = excelTypeEnum.getValue();
             response.setHeader("Content-Disposition", "attachment;fileName=" + URLUtil.encode(fileName) + getFileName() + fileType);
             response.setContentType("multipart/form-data");
@@ -55,7 +53,7 @@ public class ExcelServiceImpl implements ExcelService {
             excelWriter.finish();
             outputStream.flush();
             log.info("Excel导出完成");
-        }catch (IOException e){
+        } catch (IOException e) {
             log.error("excel old export error", e);
         }
     }
@@ -107,6 +105,20 @@ public class ExcelServiceImpl implements ExcelService {
         return null;
     }
 
+    @Override
+    public List<?> syncUpLoad(MultipartFile file, Class<?> header) throws IOException {
+        return EasyExcel.read(file.getInputStream(), header, null).doReadAllSync();
+    }
+
+    @Override
+    public Map<String, List<ExcelUploadModel>> asyncUpLoad(MultipartFile file, Class<?> header) throws IOException {
+        ExcelListener readListener = new ExcelListener();
+        EasyExcel.read(file.getInputStream(), header, readListener).doReadAllSync();
+        Map<String, List<ExcelUploadModel>> map = new HashMap<>();
+        map.put("res", readListener.getData());
+        return map;
+    }
+
     /**
      * 根据当前时间命名文件名称
      *
@@ -134,5 +146,7 @@ public class ExcelServiceImpl implements ExcelService {
         });
         return datas;
     }
+
+
 
 }
