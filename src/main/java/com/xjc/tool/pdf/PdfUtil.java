@@ -60,10 +60,10 @@ public class PdfUtil {
             pdfReader = new PdfReader(templatePath);
             // 生成一个新的pdf
             pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(outputPdfPath));
+            // 获取pdf操作页面
+            overContent = pdfStamper.getOverContent(1);
             for (int i = 0; i < imgPaths.size(); i++) {
                 ImageExt imageExt = imgPaths.get(i);
-                // 获取pdf操作页面
-                overContent = pdfStamper.getOverContent(1);
                 // 获取上传图片
                 Image image = Image.getInstance(imageExt.getPath());
                 // 图片旋转
@@ -97,7 +97,7 @@ public class PdfUtil {
 
     public static void main(String[] args) {
         PdfUtil pdfUtil = new PdfUtil();
-        String templatePath = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeTemplate.pdf.pdf";
+        String templatePath = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeTemplate.pdf";
         String res = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeResult.pdf";
         String keyPre = "Picture";
         String imagePath = "F:\\workspace\\tool\\src\\main\\resources\\image";
