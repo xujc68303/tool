@@ -67,6 +67,7 @@ public class PdfUtil {
                 // 获取上传图片
                 Image image = Image.getInstance(imageExt.getPath());
                 // 图片旋转
+                // todo 怎么判断图片是否旋转？
                 if (i == 4 || i == 5) {
                     image.setRotationDegrees(90f);
                 }
@@ -120,9 +121,21 @@ public class PdfUtil {
 
     @Data
     static class ImageExt implements Serializable {
+        /**
+         * pdf操作域
+         */
         private String field;
+        /**
+         * 图片路径
+         */
         private String path;
+        /**
+         * 横坐标
+         */
         private float locationX;
+        /**
+         * 纵坐标
+         */
         private float locationY;
 
         public ImageExt(float locationX, float locationY) {
