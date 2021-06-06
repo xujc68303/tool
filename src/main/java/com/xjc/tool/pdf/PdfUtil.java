@@ -49,25 +49,22 @@ public class PdfUtil {
      * @param templatePath  要操作的pdf路径
      * @param outputPdfPath 输出的pdf路径
      * @param imgPaths      添加的图片信息
-     * @return
      */
     public void insertImgToPdf(String templatePath, String outputPdfPath, List<ImageExt> imgPaths) {
         PdfReader pdfReader = null;
         PdfStamper pdfStamper = null;
-        PdfContentByte overContent = null;
         try {
             // 读取模板文件
             pdfReader = new PdfReader(templatePath);
             // 生成一个新的pdf
             pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(outputPdfPath));
             // 获取pdf操作页面
-            overContent = pdfStamper.getOverContent(1);
+            PdfContentByte overContent = pdfStamper.getOverContent(1);
             for (int i = 0; i < imgPaths.size(); i++) {
                 ImageExt imageExt = imgPaths.get(i);
                 // 获取上传图片
                 Image image = Image.getInstance(imageExt.getPath());
                 // 图片旋转
-                // todo 怎么判断图片是否旋转？
                 if (i == 4 || i == 5) {
                     image.setRotationDegrees(90f);
                 }
