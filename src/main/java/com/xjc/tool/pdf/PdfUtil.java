@@ -31,12 +31,10 @@ public class PdfUtil {
     private static Map<String, ImageExt> IMAGEEXT = Maps.newLinkedHashMap();
 
     static {
-        IMAGEEXT.put("Picture1", new ImageExt(47.7821f, 590.287f));
-        IMAGEEXT.put("Picture2", new ImageExt(212.728f, 590.287f));
-        IMAGEEXT.put("Picture3", new ImageExt(377.02f, 590.287f));
-        IMAGEEXT.put("Picture4", new ImageExt(48.0528f, 390.044f));
-        IMAGEEXT.put("Picture5", new ImageExt(212.728f, 390.044f));
-        IMAGEEXT.put("Picture6", new ImageExt(377.02f, 390.044f));
+        IMAGEEXT.put("Picture1", new ImageExt(130.7821f, 430.287f));
+        IMAGEEXT.put("Picture2", new ImageExt(330.7821f, 430.287f));
+        IMAGEEXT.put("Picture3", new ImageExt(130.7821f, 30.287f));
+        IMAGEEXT.put("Picture4", new ImageExt(330.7821f, 30.287f));
     }
 
     public ImageExt getCoordinate(String path) {
@@ -65,11 +63,11 @@ public class PdfUtil {
                 // 获取上传图片
                 Image image = Image.getInstance(imageExt.getPath());
                 // 图片旋转
-                if (i == 4 || i == 5) {
+                if (!getVerticalImage(image)) {
                     image.setRotationDegrees(90f);
                 }
                 // 图片缩放比例
-                image.scalePercent(4.699f);
+                image.scalePercent(25f);
                 // 左边距、底边距
                 image.setAbsolutePosition(imageExt.getLocationX(), imageExt.getLocationY());
                 overContent.addImage(image);
@@ -92,12 +90,22 @@ public class PdfUtil {
         }
     }
 
+    private static boolean getVerticalImage(Image image) {
+        boolean isVertical = false;
+        float height = image.getHeight();
+        float width = image.getWidth();
+        if (height > width) {
+            isVertical = true;
+        }
+        return isVertical;
+    }
+
     public static void main(String[] args) {
         PdfUtil pdfUtil = new PdfUtil();
         String templatePath = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeTemplate.pdf";
         String res = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeResult.pdf";
         String keyPre = "Picture";
-        String imagePath = "F:\\workspace\\tool\\src\\main\\resources\\image";
+        String imagePath = "C:\\Users\\Administrator\\Desktop\\采买截图";
 
         Map<String, String> field = Maps.newLinkedHashMap();
         File[] ls = FileUtil.ls(imagePath);
