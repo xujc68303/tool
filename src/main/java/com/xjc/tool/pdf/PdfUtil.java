@@ -1,7 +1,7 @@
 package com.xjc.tool.pdf;
 
 import cn.hutool.core.io.FileUtil;
-import com.google.common.collect.Lists;
+import cn.hutool.core.util.ZipUtil;
 import com.google.common.collect.Maps;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * @Author jiachenxu
@@ -101,31 +101,80 @@ public class PdfUtil {
     }
 
     public static void main(String[] args) {
-        PdfUtil pdfUtil = new PdfUtil();
-        String templatePath = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeTemplate.pdf";
-        String res = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeResult.pdf";
-        String keyPre = "Picture";
-        String imagePath = "C:\\Users\\Administrator\\Desktop\\采买截图";
+//        PdfUtil pdfUtil = new PdfUtil();
+//        String templatePath = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeTemplate.pdf";
+//        String res = "F:\\workspace\\tool\\src\\main\\resources\\pdfTemplate\\mergeResult.pdf";
+//        String keyPre = "Picture";
+//        String imagePath = "C:\\Users\\Administrator\\Desktop\\采买截图";
+//
+//        Map<String, String> field = Maps.newLinkedHashMap();
+//        File[] ls = FileUtil.ls(imagePath);
+//        for (int i = 0; i < ls.length; i++) {
+//            field.put(keyPre + (i + 1), ls[i].getPath());
+//        }
+//        List<ImageExt> imageList = Lists.newLinkedList();
+//        field.forEach((k, v) -> {
+//            ImageExt coordinate = pdfUtil.getCoordinate(k);
+//            coordinate.setField(k);
+//            coordinate.setPath(v);
+//            imageList.add(coordinate);
+//        });
+//
+//
+//        pdfUtil.insertImgToPdf(templatePath, res, imageList);
 
-        Map<String, String> field = Maps.newLinkedHashMap();
-        File[] ls = FileUtil.ls(imagePath);
-        for (int i = 0; i < ls.length; i++) {
-            field.put(keyPre + (i + 1), ls[i].getPath());
+        String zipPath = "C:\\Users\\Administrator\\Desktop\\三段式-移动端取证.zip";
+        String unResult = "C:\\Users\\Administrator\\Desktop\\新建文件夹 (2)";
+        ZipUtil.unzip(zipPath, unResult, Charset.forName("GBK"));
+
+        List<Long> order = new ArrayList<>();
+        List<File> fileList = new ArrayList<>();
+        File[] ls = FileUtil.ls(unResult);
+        StringBuilder sb = new StringBuilder();
+        for (File file : ls) {
+            if (FileUtil.isDirectory(file)) {
+                boolean flag = false;
+                if (file.getName().contains("截图")) {
+                    flag = true;
+                }
+                File[] directorys = FileUtil.ls(file.getAbsolutePath());
+                for (File directory : directorys) {
+                    fileList.add(directory);
+                    sb.setLength(0);
+                    String name = directory.getName();
+                    if (flag) {
+                        String[] split = name.substring(name.indexOf("_") + 1, name.lastIndexOf("_")).split("-");
+                        for (String s : split) {
+                            sb.append(s);
+                        }
+                        order.add(Long.parseLong(sb.toString()));
+                    } else {
+                        String substring = name.substring(name.indexOf("_") + 1, name.lastIndexOf("."));
+                        String[] s = substring.split("_");
+                        order.add(Long.parseLong(s[0] + s[1]));
+                    }
+                }
+            }
         }
-        List<ImageExt> imageList = Lists.newLinkedList();
-        field.forEach((k, v) -> {
-            ImageExt coordinate = pdfUtil.getCoordinate(k);
-            coordinate.setField(k);
-            coordinate.setPath(v);
-            imageList.add(coordinate);
+
+        System.out.println(fileList);
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                if (o1.isDirectory() && o2.isFile())
+                    return -1;
+                if (o1.isFile() && o2.isDirectory())
+                    return 1;
+                return o1.getName().compareTo(o2.getName());
+            }
         });
+        System.out.println(fileList);
 
-
-        pdfUtil.insertImgToPdf(templatePath, res, imageList);
     }
 
+
     @Data
-    static class ImageExt implements Serializable {
+    public static class ImageExt implements Serializable {
         /**
          * pdf操作域
          */
