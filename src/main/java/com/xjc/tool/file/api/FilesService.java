@@ -1,5 +1,7 @@
 package com.xjc.tool.file.api;
 
+import java.io.File;
+
 /**
  * @Version 1.0
  * @ClassName FilesService
@@ -58,5 +60,23 @@ public interface FilesService {
      * @return 执行结果
      */
     Boolean copy(String oldPath, String newPath);
+
+    /**
+     * 文件夹里面内容正序排序
+     *
+     * @param files
+     * @return
+     */
+    File[] sortFolders(File[] files);
+
+    /**
+     * 文件大小检查
+     *
+     * @param len  文件大小
+     * @param size 文件阈值
+     * @param unit 单位
+     * @return
+     */
+    boolean checkFileSize(Long len, int size, String unit);
 
 }

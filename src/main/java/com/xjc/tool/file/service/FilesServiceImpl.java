@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileStore;
@@ -183,6 +184,64 @@ public class FilesServiceImpl implements FilesService {
             }
         }
         return false;
+    }
+
+    /**
+     * 文件夹里面内容正序排序
+     *
+     * @param files
+     * @return
+     */
+    @Override
+    public File[] sortFolders(File[] files) {
+        File temp;
+        StringBuilder stringBuilder = new StringBuilder(32);
+        for (int j = 0; j < files.length - 1; j++) {
+            String min = files[j].getName();
+            int minIndex = j;
+            for (int k = j + 1; k < files.length; k++) {
+                if (Long.parseLong(substringStr(min, stringBuilder)) > Long.parseLong(substringStr(files[k].getName(), stringBuilder))) {
+                    min = files[k].getName();
+                    minIndex = k;
+                }
+            }
+            temp = files[j];
+            files[j] = files[minIndex];
+            files[minIndex] = temp;
+        }
+        return files;
+    }
+
+    @Override
+    public boolean checkFileSize(Long len, int size, String unit) {
+        double fileSize = 0;
+        if ("B".equals(unit.toUpperCase())) {
+            fileSize = (double) len;
+        } else if ("K".equals(unit.toUpperCase())) {
+            fileSize = (double) len / 1024;
+        } else if ("M".equals(unit.toUpperCase())) {
+            fileSize = (double) len / 1048576;
+        } else if ("G".equals(unit.toUpperCase())) {
+            fileSize = (double) len / 1073741824;
+        }
+        return fileSize > size;
+    }
+
+    private String substringStr(String str, StringBuilder stringBuilder) {
+        String result = null;
+        stringBuilder.setLength(0);
+        String[] s = str.substring(0, str.lastIndexOf(".")).split("_");
+        if (str.contains("Screenshot")) {
+            String strings = s[1];
+            String[] split = strings.split("-");
+            for (String value : split) {
+                stringBuilder.append(value);
+            }
+            result = stringBuilder.toString();
+        } else if (str.contains("IMG")) {
+            result = s[1] + s[2];
+        }
+        return result;
     }
 
     /**
