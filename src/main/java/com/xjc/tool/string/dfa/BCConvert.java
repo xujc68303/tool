@@ -1,8 +1,13 @@
 package com.xjc.tool.string.dfa;
 
+import org.springframework.stereotype.Component;
+
 /**
- * 全角/半角转换
+ * @Author jiachenxu
+ * @Date 2021/6/20
+ * @Descripetion 全角/半角转换
  */
+@Component
 public class BCConvert {
 
     /**

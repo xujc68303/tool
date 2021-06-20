@@ -1,53 +1,47 @@
 package com.xjc.tool.string.dfa;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- * <p>
- * 思路： 创建一个FilterSet，枚举了0~65535的所有char是否是某个敏感词开头的状态
- * <p>
- * 判断是否是 敏感词开头 | | 是 不是 获取头节点 OK--下一个字 然后逐级遍历，DFA算法
- *
+ * @Author jiachenxu
+ * @Date 2021/6/20
+ * @Descripetion 判断是否是敏感词
  */
 public class WordFilter {
 
     /**
      * 存储首字
      */
-    private static final FilterSet set = new FilterSet();
+    private static final FilterSet FILTER_FIRST = new FilterSet();
 
     /**
      * 存储节点
      */
-    private static final Map<Integer, WordNode> nodes = new HashMap<>(1024, 1);
+    private static final Map<Integer, WordNode> NODES = new HashMap<>(1024, 1);
 
     /**
      * 停顿词
      */
-    private static final Set<Integer> stopwdSet = new HashSet<>();
+    private static final Set<Integer> STOP_WD = new HashSet<>();
 
     /**
      * 敏感词过滤替换
      */
     private static final char SIGN = '*';
 
-    static {
-        try {
-            init();
-        } catch (Exception e) {
-            // 加载失败
-        }
-    }
-
     /**
      * 初始化敏感词库
      */
-    private static void init() {
-        addSensitiveWord(readWordFromFile("\\filter\\wd.txt"));
-        addStopWord(readWordFromFile("\\filter\\stopwd.txt"));
+    @PostConstruct
+    private void init() {
+        String stop = WordFilter.class.getResource("filter/wd.txt").getPath();
+        String sensitive = WordFilter.class.getResource("filter/stopwd.txt").getPath();
+        addSensitiveWord(readWordFromFile(stop));
+        addStopWord(readWordFromFile(sensitive));
     }
 
     /**
@@ -56,7 +50,7 @@ public class WordFilter {
      * @param path
      * @return
      */
-    private static List<String> readWordFromFile(String path) {
+    private List<String> readWordFromFile(String path) {
         List<String> words;
         BufferedReader br = null;
         try {
@@ -85,13 +79,13 @@ public class WordFilter {
      *
      * @param words
      */
-    private static void addStopWord(final List<String> words) {
+    private void addStopWord(final List<String> words) {
         if (!isEmpty(words)) {
             char[] chs;
             for (String curr : words) {
                 chs = curr.toCharArray();
                 for (char c : chs) {
-                    stopwdSet.add(charConvert(c));
+                    STOP_WD.add(charConvert(c));
                 }
             }
         }
@@ -102,7 +96,7 @@ public class WordFilter {
      *
      * @param words
      */
-    private static void addSensitiveWord(final List<String> words) {
+    private void addSensitiveWord(final List<String> words) {
         if (!isEmpty(words)) {
             char[] chs;
             int fchar;
@@ -113,12 +107,12 @@ public class WordFilter {
                 chs = curr.toCharArray();
                 fchar = charConvert(chs[0]);
                 // 没有首字定义
-                if (!set.contains(fchar)) {
-                    set.add(fchar);
+                if (!FILTER_FIRST.contains(fchar)) {
+                    FILTER_FIRST.add(fchar);
                     fnode = new WordNode(fchar, chs.length == 1);
-                    nodes.put(fchar, fnode);
+                    NODES.put(fchar, fnode);
                 } else {
-                    fnode = nodes.get(fchar);
+                    fnode = NODES.get(fchar);
                     if (!fnode.isLast() && chs.length == 1)
                         fnode.setLast(true);
                 }
@@ -136,8 +130,8 @@ public class WordFilter {
      * @param src
      * @return
      */
-    public static final String doFilter(final String src) {
-        if (set != null && nodes != null) {
+    private static String doFilter(final String src) {
+        if (FILTER_FIRST != null && NODES != null) {
             char[] chs = src.toCharArray();
             int length = chs.length;
             // 当前检查的字符
@@ -148,12 +142,12 @@ public class WordFilter {
             WordNode node;
             for (int i = 0; i < length; i++) {
                 currc = charConvert(chs[i]);
-                if (!set.contains(currc)) {
+                if (!FILTER_FIRST.contains(currc)) {
                     continue;
                 }
-                node = nodes.get(currc);
-                if (node == null)
-                    continue;
+                node = NODES.get(currc);
+                if (node == null) continue;
+
                 boolean couldMark = false;
                 int markNum = -1;
                 // 单字匹配
@@ -167,13 +161,11 @@ public class WordFilter {
                 cpcurrc = currc;
                 for (; ++k < length; ) {
                     int temp = charConvert(chs[k]);
-                    if (temp == cpcurrc)
-                        continue;
-                    if (stopwdSet != null && stopwdSet.contains(temp))
-                        continue;
+                    if (temp == cpcurrc)  continue;
+
+                    if (STOP_WD != null && STOP_WD.contains(temp))   continue;
                     node = node.querySub(temp);
-                    if (node == null)
-                        break;
+                    if (node == null)  break;
                     if (node.isLast()) {
                         couldMark = true;
                         markNum = k - i;
@@ -198,8 +190,8 @@ public class WordFilter {
      * @param src
      * @return
      */
-    public static final boolean isContains(final String src) {
-        if (set != null && nodes != null) {
+    public static boolean isContains(final String src) {
+        if (FILTER_FIRST != null && NODES != null) {
             char[] chs = src.toCharArray();
             int length = chs.length;
             // 当前检查的字符
@@ -210,17 +202,12 @@ public class WordFilter {
             WordNode node;
             for (int i = 0; i < length; i++) {
                 currc = charConvert(chs[i]);
-                if (!set.contains(currc)) {
-                    continue;
-                }
-                node = nodes.get(currc);
-                if (node == null)
-                    continue;
+                if (!FILTER_FIRST.contains(currc)) continue;
+                node = NODES.get(currc);
+                if (node == null) continue;
                 boolean couldMark = false;
                 // 单字匹配
-                if (node.isLast()) {
-                    couldMark = true;
-                }
+                if (node.isLast()) couldMark = true;
                 // 继续匹配，以长的优先
                 k = i;
                 cpcurrc = currc;
@@ -228,19 +215,13 @@ public class WordFilter {
                     int temp = charConvert(chs[k]);
                     if (temp == cpcurrc)
                         continue;
-                    if (stopwdSet != null && stopwdSet.contains(temp))
-                        continue;
+                    if (STOP_WD != null && STOP_WD.contains(temp)) continue;
                     node = node.querySub(temp);
-                    if (node == null)
-                        break;
-                    if (node.isLast()) {
-                        couldMark = true;
-                    }
+                    if (node == null) break;
+                    if (node.isLast()) couldMark = true;
                     cpcurrc = temp;
                 }
-                if (couldMark) {
-                    return true;
-                }
+                if (couldMark) return true;
             }
         }
         return false;
@@ -263,7 +244,7 @@ public class WordFilter {
      * @param col
      * @return
      */
-    public static <T> boolean isEmpty(final Collection<T> col) {
+    private <T> boolean isEmpty(final Collection<T> col) {
         return col == null || col.isEmpty();
     }
 
