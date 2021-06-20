@@ -33,6 +33,7 @@
         <itextpdf.version>5.5.6</itextpdf.version>
         <itext-asian.version>5.2.0</itext-asian.version>
         <pdfbox.version>2.0.8</pdfbox.version>
+        <thumbnailator.version>0.4.14</thumbnailator.version>
     </properties>
 
     <dependencies>
@@ -185,6 +186,12 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>${pdfbox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>${thumbnailator.version}</version>
         </dependency>
 
     </dependencies>
