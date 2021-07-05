@@ -19,7 +19,7 @@
         <junit.version>4.12</junit.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <fastjson.version>1.2.76</fastjson.version>
-        <hutool.version>5.6.5</hutool.version>
+        <hutool.version>5.7.3</hutool.version>
         <easyexcel.version>2.2.10</easyexcel.version>
         <jetbrains.version>21.0.1</jetbrains.version>
         <expiringmap.version>0.5.9</expiringmap.version>
@@ -164,10 +164,11 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
+            <artifactId>hutool-jwt</artifactId>
+            <version>5.7.3</version>
         </dependency>
 
         <!--itextpdf-->
@@ -219,7 +220,6 @@
         </dependency>
 
     </dependencies>
-
 
 
     <build>

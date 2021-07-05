@@ -1,4 +1,4 @@
-package com.xjc.tool.verification;
+package com.xjc.tool.verification.Preconditions;
 
 import com.google.common.base.Preconditions;
 import org.springframework.util.StringUtils;
