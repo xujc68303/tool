@@ -1,0 +1,60 @@
+server:
+  port: 8086
+
+  tomcat:
+    uri-encoding: utf-8
+
+  servlet:
+    session:
+      timeout: 30m
+
+spring:
+
+  application:
+    name: util
+
+  profiles:
+    active: dev
+
+  cache:
+    type: caffeine
+    cache-names: localCache
+    caffeine:
+      spec: initialCapacity=50,maximumSize=1024,refreshAfterWrite=60s
+
+  jackson:
+    #日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    #设置空如何序列化
+    default-property-inclusion: non_null
+    serialization:
+      #格式化输出
+      indent_output: true
+      #忽略无法转换的对象
+      fail_on_empty_beans: false
+    deserialization:
+      #允许对象忽略json中不存在的属性
+      fail_on_unknown_properties: false
+    parser:
+      #允许出现特殊字符和转义符
+      allow_unquoted_control_chars: true
+      #允许出现单引号
+      allow_single_quotes: true
+
+
+#线程池配置
+async:
+  executor:
+    thread:
+      # 核心线程数
+      core_pool_size: 10
+      # 最大线程数
+      max_pool_size: 30
+      # 队列大小
+      queue_capacity: 20
+      # 线程空闲时间
+      keep_alive_time: 300
+      name:
+        # 线程池中的线程的名称
+        prefix: async-service
