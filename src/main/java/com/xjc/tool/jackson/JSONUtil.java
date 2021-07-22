@@ -63,13 +63,13 @@ public class JSONUtil {
         return r;
     }
 
-    public static <clazz> List<?> jsonToList(String json, clazz clazz) {
+    public static <T> List<?> jsonToList(String json, T clazz) {
         if (json == null) {
             return null;
         }
-        List<clazz> clazzes = null;
+        List<T> clazzes = null;
         try {
-            clazzes = MAPPER.readValue(json, new TypeReference<List<clazz>>() {});
+            clazzes = MAPPER.readValue(json, new TypeReference<List<T>>() {});
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
