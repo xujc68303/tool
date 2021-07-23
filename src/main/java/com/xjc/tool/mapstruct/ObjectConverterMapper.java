@@ -11,7 +11,6 @@ import java.util.List;
  * @Date 2021/3/27
  * @Description 领域模型转换
  */
-@Mapper(uses = DateConverterMapper.class)
 public interface ObjectConverterMapper<SOURCE, TARGET> {
 
     TARGET to(SOURCE source);
