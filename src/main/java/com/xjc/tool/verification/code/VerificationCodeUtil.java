@@ -2,13 +2,10 @@ package com.xjc.tool.verification.code;
 
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
+import cn.hutool.captcha.generator.MathGenerator;
 import cn.hutool.captcha.generator.RandomGenerator;
-import cn.hutool.http.server.HttpServerResponse;
 
-import javax.annotation.PostConstruct;
 import java.awt.*;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @Description 验证码生成
@@ -19,25 +16,28 @@ public class VerificationCodeUtil {
 
     private static LineCaptcha lineCaptcha;
 
-    @PostConstruct
-    public void init() {
-        lineCaptcha = CaptchaUtil.createLineCaptcha(230, 130);
+    public VerificationCodeUtil() {
+        lineCaptcha = CaptchaUtil.createLineCaptcha(230, 130, 4, 200);
         lineCaptcha.setGenerator(new RandomGenerator(4));
-        lineCaptcha.setBackground(Color.BLACK);
+        lineCaptcha.setBackground(Color.WHITE);
     }
 
-    public static void get(HttpServerResponse response) throws IOException {
-        try (OutputStream out = response.getOut()) {
-            lineCaptcha.write(out);
-        }
+    public void create(String path) {
+        lineCaptcha.write(path);
     }
 
-    public static String getCode() {
+    public String getCode() {
         return lineCaptcha.getCode();
     }
 
-    public static boolean isVerify(String code) {
+    public boolean isVerify(String code) {
         return lineCaptcha.verify(code);
+    }
+
+    public static void main(String[] args) {
+        VerificationCodeUtil verificationCodeUtil = new VerificationCodeUtil();
+        verificationCodeUtil.create("d:/line.png");
+        System.out.println(verificationCodeUtil.getCode());
     }
 
 }
