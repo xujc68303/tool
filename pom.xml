@@ -35,6 +35,7 @@
         <pdfbox.version>2.0.8</pdfbox.version>
         <thumbnailator.version>0.4.14</thumbnailator.version>
         <jackson.version>2.12.3</jackson.version>
+        <jsonwebtoken.version>0.9.0</jsonwebtoken.version>
     </properties>
 
     <dependencies>
@@ -216,6 +217,12 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jsonwebtoken.version}</version>
         </dependency>
 
     </dependencies>
