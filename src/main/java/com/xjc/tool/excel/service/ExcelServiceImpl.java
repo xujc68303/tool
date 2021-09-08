@@ -1,6 +1,5 @@
 package com.xjc.tool.excel.service;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.URLUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
@@ -8,17 +7,21 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.xjc.tool.date.DateUtil;
 import com.xjc.tool.excel.api.ExcelService;
 import com.xjc.tool.excel.object.ExcelUploadModel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -64,16 +67,45 @@ public class ExcelServiceImpl implements ExcelService {
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             String fileType = excelTypeEnum.getValue();
             response.setHeader("Content-Disposition", "attachment;fileName=" + URLUtil.encode(fileName) + getFileName() + fileType);
-            response.setContentType("multipart/form-data");
+            response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding(UTF8);
+            // head
+            WriteCellStyle headWriteCellStyle = getHeadStyle();
+            // content
+            WriteCellStyle contentWriteCellStyle = getContentStyle();
             EasyExcel.write(outputStream)
                     .head(buildHead(data.keySet()))
                     .sheet(sheetName)
-                    .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                    .registerWriteHandler(new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle))
                     .doWrite(buildData((List<Object>) data.values()));
         } catch (IOException e) {
             log.error("excel export error", e);
         }
+    }
+
+    @NotNull
+    private WriteCellStyle getContentStyle() {
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        WriteFont contentWriteFont = new WriteFont();
+        contentWriteFont.setFontHeightInPoints((short) 12);
+        contentWriteCellStyle.setWriteFont(contentWriteFont);
+        // 自动换行
+        contentWriteCellStyle.setWrapped(true);
+        // 水平剧中
+        contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        return contentWriteCellStyle;
+    }
+
+    @NotNull
+    private WriteCellStyle getHeadStyle() {
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        headWriteCellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        headWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        WriteFont headWriteFont = new WriteFont();
+        headWriteFont.setFontHeightInPoints((short) 16);
+        headWriteFont.setBold(true);
+        headWriteCellStyle.setWriteFont(headWriteFont);
+        return headWriteCellStyle;
     }
 
     @Override
@@ -146,7 +178,6 @@ public class ExcelServiceImpl implements ExcelService {
         });
         return datas;
     }
-
 
 
 }
