@@ -1,5 +1,7 @@
 package com.xjc.tool.mapstruct;
 
+import org.mapstruct.Mapper;
+
 import java.util.List;
 
 /**

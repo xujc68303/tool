@@ -1,7 +1,12 @@
 package com.xjc.tool.autoid;
 
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.stereotype.Component;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 
@@ -33,12 +38,12 @@ public class SnowflakeId {
     /**
      * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
      */
-    private static final long maxWorkerId = -1L ^ (-1L << workerIdBits);
+    private static final long maxWorkerId = ~(-1L << workerIdBits);
 
     /**
      * 支持的最大数据标识id，结果是31
      */
-    private static final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+    private static final long maxDatacenterId = ~(-1L << datacenterIdBits);
 
     /**
      * 序列在id中占的位数
@@ -63,7 +68,7 @@ public class SnowflakeId {
     /**
      * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
      */
-    private final long sequenceMask = -1L ^ (-1L << sequenceBits);
+    private final long sequenceMask = ~(-1L << sequenceBits);
 
     /**
      * 工作机器ID(0~31)
@@ -85,7 +90,13 @@ public class SnowflakeId {
      */
     private long lastTimestamp = -1L;
 
+    private static final SnowflakeId snowflakeId;
+
     static {
+        snowflakeId = new SnowflakeId(getWorkId(), getDataCenterId());
+    }
+
+    public SnowflakeId(long workerId, long dataCenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(
                     String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
@@ -95,8 +106,37 @@ public class SnowflakeId {
                     String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
         }
         twepoch = LocalDateTime.now().getLong(ChronoField.MICRO_OF_SECOND);
-        workerId = workerId;
-        datacenterId = datacenterId;
+        SnowflakeId.workerId = workerId;
+        SnowflakeId.datacenterId = dataCenterId;
+    }
+
+    public static String generateId() {
+        return String.valueOf(snowflakeId.nextId());
+    }
+
+    private static Long getWorkId() {
+        try {
+            String hostAddress = Inet4Address.getLocalHost().getHostAddress();
+            int[] ints = StringUtils.toCodePoints(hostAddress);
+            int sums = 0;
+            for (int b : ints) {
+                sums += b;
+            }
+            return (long) (sums % 32);
+        } catch (UnknownHostException e) {
+            return RandomUtils.nextLong(0, 31);
+        }
+    }
+
+    private static Long getDataCenterId() {
+        String hostName = SystemUtils.getHostName();
+        if (StringUtils.isBlank(hostName)) hostName = "localhost";
+        int[] ints = StringUtils.toCodePoints(hostName);
+        int sums = 0;
+        for (int i : ints) {
+            sums += i;
+        }
+        return (long) (sums % 32);
     }
 
     /**
@@ -104,7 +144,7 @@ public class SnowflakeId {
      *
      * @return SnowflakeId
      */
-    public synchronized long nextId() {
+    private synchronized long nextId() {
         long timestamp = timeGen();
         // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
@@ -128,9 +168,9 @@ public class SnowflakeId {
         // 上次生成ID的时间截
         lastTimestamp = timestamp;
         // 移位并通过或运算拼到一起组成64位的ID
-        return ((timestamp - twepoch) << timestampLeftShift) //
-                | (datacenterId << datacenterIdShift) //
-                | (workerId << workerIdShift) //
+        return ((timestamp - twepoch) << timestampLeftShift)
+                | (datacenterId << datacenterIdShift)
+                | (workerId << workerIdShift)
                 | sequence;
     }
 
@@ -157,19 +197,4 @@ public class SnowflakeId {
         return System.currentTimeMillis();
     }
 
-    public void setWorkerId(long workerId) {
-        workerId = workerId;
-    }
-
-    public void setDatacenterId(long datacenterId) {
-        datacenterId = datacenterId;
-    }
-
-    public long getWorkerIdShift() {
-        return workerIdShift;
-    }
-
-    public long getDatacenterIdShift() {
-        return datacenterIdShift;
-    }
 }

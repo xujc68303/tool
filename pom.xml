@@ -19,7 +19,7 @@
         <junit.version>4.12</junit.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <fastjson.version>1.2.76</fastjson.version>
-        <hutool.version>5.6.5</hutool.version>
+        <hutool.version>5.7.3</hutool.version>
         <easyexcel.version>2.2.10</easyexcel.version>
         <jetbrains.version>21.0.1</jetbrains.version>
         <expiringmap.version>0.5.9</expiringmap.version>
@@ -34,6 +34,8 @@
         <itext-asian.version>5.2.0</itext-asian.version>
         <pdfbox.version>2.0.8</pdfbox.version>
         <thumbnailator.version>0.4.14</thumbnailator.version>
+        <jackson.version>2.12.3</jackson.version>
+        <jsonwebtoken.version>0.9.0</jsonwebtoken.version>
     </properties>
 
     <dependencies>
@@ -65,7 +67,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!--commons-->
@@ -163,10 +164,11 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
+            <artifactId>hutool-jwt</artifactId>
+            <version>5.7.3</version>
         </dependency>
 
         <!--itextpdf-->
@@ -188,14 +190,42 @@
             <version>${pdfbox.version}</version>
         </dependency>
 
+        <!--thumbnailator-->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
         </dependency>
 
-    </dependencies>
+        <!--jackson-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jsonwebtoken.version}</version>
+        </dependency>
+
+    </dependencies>
 
 
     <build>
@@ -212,6 +242,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <annotationProcessorPaths>
                         <path>
