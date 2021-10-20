@@ -48,7 +48,7 @@ public class TokenUtil {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec((new BASE64Decoder()).decodeBuffer(base64s));
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             publicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
-        } catch (Exception var4) {
+        } catch (Exception var1) {
 
         }
         return publicKey;
@@ -60,9 +60,21 @@ public class TokenUtil {
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec((new BASE64Decoder()).decodeBuffer(base64s));
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             privateKey = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
-        } catch (Exception var4) {
+        } catch (Exception var2) {
         }
         return privateKey;
+    }
+
+    public static void main(String[] args) {
+        TokenUtil tokenUtil = new TokenUtil("xjc");
+        String privateKey = tokenUtil.getPrivateKey();
+        System.out.println(privateKey);
+        String s = tokenUtil.decryptPrivate(privateKey);
+        System.out.println(s);
+        String publicKey = tokenUtil.getPublicKey();
+        System.out.println(publicKey);
+        String s1 = tokenUtil.decryPtPublic(publicKey);
+        System.out.println(s1);
     }
 
 }

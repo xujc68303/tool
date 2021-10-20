@@ -37,7 +37,7 @@ public class Token2Util {
         }
         return Jwts.parser()
                 .setSigningKey(SECRET)
-                .parseClaimsJws(token.replace("Bearer", ""))
+                .parseClaimsJws(token.replace("Bearer", "").trim())
                 .getBody();
     }
 
