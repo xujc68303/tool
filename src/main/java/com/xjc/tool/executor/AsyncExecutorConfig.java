@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @Version 1.0
- * @ClassName ExecutorConfig
+ * @ClassName AsyncExecutorConfig
  * @Author jiachenXu
  * @Date 2020/4/8
  * @Description 线程池配置
@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @EnableAsync
 @Configuration
-public class ExecutorConfig implements AsyncConfigurer {
+public class AsyncExecutorConfig implements AsyncConfigurer {
 
     @Value("${async.executor.thread.core_pool_size}")
     private int corePoolSize;

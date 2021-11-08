@@ -3,7 +3,6 @@ package com.xjc.tool.autoid;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.springframework.stereotype.Component;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -17,7 +16,6 @@ import java.time.temporal.ChronoField;
  * @Date 2020/8/22
  * @Description ID自增工具
  */
-@Component
 public class SnowflakeId {
 
     /**

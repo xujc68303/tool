@@ -18,12 +18,12 @@ public class ThreadChangeDemo {
         dynamicModifyExecutor();
     }
 
-    private static ThreadPoolExecutor buildThradPoolExecutor() {
+    private static ThreadPoolExecutor buildThreadPoolExecutor() {
         return new ThreadPoolExecutor(2, 5, 60, TimeUnit.SECONDS, new ResizableCapacityLinkedBlockIngQueue<>(10), new NamedThreadFactory("xjc test"));
     }
 
     private static void dynamicModifyExecutor() {
-        ThreadPoolExecutor executor = buildThradPoolExecutor();
+        ThreadPoolExecutor executor = buildThreadPoolExecutor();
         for (int i = 0; i < 15; i++) {
             executor.execute(() -> {
                 threadPoolStatus(executor, "create task");
