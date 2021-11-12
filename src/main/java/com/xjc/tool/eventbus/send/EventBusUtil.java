@@ -26,7 +26,7 @@ public class EventBusUtil {
 
     public EventBus getEventBus() {
         if (Objects.isNull(eventBus)) {
-            synchronized (EventBus.class) {
+            synchronized (EventBusUtil.class) {
                 if (Objects.isNull(eventBus)) {
                     eventBus = new EventBus();
                 }
@@ -37,7 +37,7 @@ public class EventBusUtil {
 
     public AsyncEventBus getAsyncEventBus() {
         if (Objects.isNull(asyncEventBus)) {
-            synchronized (EventBus.class) {
+            synchronized (EventBusUtil.class) {
                 if (Objects.isNull(asyncEventBus)) {
                     asyncEventBus = new AsyncEventBus(executorService);
                 }
