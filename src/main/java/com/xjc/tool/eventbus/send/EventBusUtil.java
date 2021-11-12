@@ -20,9 +20,9 @@ public class EventBusUtil {
 
     private static final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-    private EventBus eventBus;
+    private volatile EventBus eventBus;
 
-    private AsyncEventBus asyncEventBus;
+    private volatile AsyncEventBus asyncEventBus;
 
     public EventBus getEventBus() {
         if (Objects.isNull(eventBus)) {
