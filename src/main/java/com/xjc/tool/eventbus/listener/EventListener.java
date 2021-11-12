@@ -17,7 +17,6 @@ public class EventListener {
 
     @Subscribe
     public void listener(EventBusModel eventBusModel){
-        long id = Thread.currentThread().getId();
-        log.info("当前线程:{}, 监听事件：{}", id, JSONObject.toJSONString(eventBusModel));
+        log.info("当前线程:{}, 监听事件：{}", Thread.currentThread().getId(), JSONObject.toJSONString(eventBusModel));
     }
 }

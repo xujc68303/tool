@@ -47,32 +47,21 @@ public class EventBusUtil {
     }
 
     public void register(EventListener eventListener) {
-        if (eventBus != null) {
-            eventBus.register(eventListener);
-        }
-
-        if (asyncEventBus != null) {
-            asyncEventBus.register(eventListener);
-        }
-
+        getEventBus().register(eventListener);
+        getAsyncEventBus().register(eventListener);
     }
 
     public void unRegister(EventListener eventListener) {
-        if (eventBus != null) {
-            eventBus.unregister(eventListener);
-        }
-
-        if (asyncEventBus != null) {
-            asyncEventBus.unregister(eventListener);
-        }
+        getEventBus().unregister(eventListener);
+        getAsyncEventBus().unregister(eventListener);
     }
 
     public void syncSend(EventBusModel eventBusModel) {
-        eventBus.post(eventBusModel);
+        getEventBus().post(eventBusModel);
     }
 
     public void asyncSend(EventBusModel eventBusModel) {
-        asyncEventBus.post(eventBusModel);
+        getAsyncEventBus().post(eventBusModel);
     }
 
 
