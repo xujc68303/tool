@@ -57,11 +57,11 @@ public class EventBusUtil {
     }
 
     public void syncSend(EventBusModel eventBusModel) {
-        getEventBus().post(eventBusModel);
+        eventBus.post(eventBusModel);
     }
 
     public void asyncSend(EventBusModel eventBusModel) {
-        getAsyncEventBus().post(eventBusModel);
+        asyncEventBus.post(eventBusModel);
     }
 
 

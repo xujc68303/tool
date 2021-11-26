@@ -1,10 +1,9 @@
 package com.xjc.tool.date;
 
-import org.springframework.stereotype.Component;
-
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Date;
 
 import static java.time.DayOfWeek.SUNDAY;
 
@@ -15,7 +14,6 @@ import static java.time.DayOfWeek.SUNDAY;
  * @Date 2020/8/9
  * @Description 时间工具类
  */
-@Component
 public class DateUtil {
 
     private volatile static LocalDate localDate;
@@ -23,6 +21,10 @@ public class DateUtil {
     private volatile static LocalDateTime localDateTime;
 
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
+
+    private static final long nd = 1000 * 24 * 60 * 60;
+    private static final long nh = 1000 * 60 * 60;
+    private static final long nm = 1000 * 60;
 
     static {
         localDate = LocalDate.now();
@@ -207,6 +209,23 @@ public class DateUtil {
         return localDate.isBefore(parseOfLocalDate(date));
     }
 
+    public static TimeModel computationTime(Date startTime, Date endTime) {
+        try {
+            long diff = endTime.getTime() - startTime.getTime();
+            long day = diff / nd;
+            long hour = diff % nd / nh;
+            long min = diff % nd % nh / nm;
+            long sec = diff % nd % nh % nm / 1000;
+            TimeModel timeModel = new TimeModel();
+            timeModel.setDay(day);
+            timeModel.setHour(hour);
+            timeModel.setMinute(min);
+            timeModel.setSecond(sec);
+            return timeModel;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 //    final DateTime DISTRIBUTION_TIME_SPLIT_TIME = new DateTime().withTime(15,0,0,0);
 //

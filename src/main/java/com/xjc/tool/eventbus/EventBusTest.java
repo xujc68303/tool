@@ -21,9 +21,7 @@ public class EventBusTest {
     public static void main(String[] args) {
 
         EventBusUtil eventBusUtil = new EventBusUtil();
-        EventListener eventListener = new EventListener();
-        eventBusUtil.getAsyncEventBus();
-        eventBusUtil.register(eventListener);
+        eventBusUtil.register(new EventListener());
         EventBusModel event = new EventBusModel();
         event.setId("1")
                 .setMessage("消息总线异步发送")
