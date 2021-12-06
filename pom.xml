@@ -37,6 +37,7 @@
         <jackson.version>2.12.3</jackson.version>
         <jsonwebtoken.version>0.9.0</jsonwebtoken.version>
         <validation.version>2.0.1.Final</validation.version>
+        <commons-codec.version>1.10</commons-codec.version>
     </properties>
 
     <dependencies>
@@ -250,6 +251,16 @@
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
             <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
         </dependency>
 
     </dependencies>
