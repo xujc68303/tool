@@ -10,6 +10,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Token2Util.java
+ *
+ * @author Xujc
+ * @date 2021/12/8
+ */
 public class Token2Util {
 
     private static final String SECRET = "jwt_secret";
