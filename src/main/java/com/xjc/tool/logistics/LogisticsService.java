@@ -25,7 +25,6 @@ public class LogisticsService {
     private static final String path = "/kdi";
     private static final String appcode = "1a6d78a98b334615a8afe68d66dc3f82";
 
-
     public LogisticsResponse catNo(String no, String type) {
         try {
             String urlSend;
@@ -67,7 +66,6 @@ public class LogisticsService {
         return null;
     }
 
-
     private static String read(InputStream is) throws IOException {
         StringBuffer sb = new StringBuffer();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
@@ -81,7 +79,7 @@ public class LogisticsService {
     }
 
     public static void main(String[] args) {
-        String no = "";
+        String no = "SF1325680577086:6013";
         LogisticsService service = new LogisticsService();
         LogisticsResponse logisticsResponse = service.catNo(no, null);
         System.out.println(logisticsResponse);
