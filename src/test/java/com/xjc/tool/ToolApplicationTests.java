@@ -3,7 +3,7 @@ package com.xjc.tool;
 import com.xjc.tool.mapstruct.Item1;
 import com.xjc.tool.mapstruct.Item2;
 import com.xjc.tool.mapstruct.ItemMapper;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
