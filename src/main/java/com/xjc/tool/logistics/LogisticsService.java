@@ -1,17 +1,13 @@
 package com.xjc.tool.logistics;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
+import com.xjc.tool.http.HttpUtil;
+import com.xjc.tool.string.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,68 +17,51 @@ import java.util.Map;
  */
 public class LogisticsService {
 
-    private static final String host = "https://wuliu.market.alicloudapi.com";
-    private static final String path = "/kdi";
-    private static final String appcode = "1a6d78a98b334615a8afe68d66dc3f82";
+    String appcode = "1a6d78a98b334615a8afe68d66dc3f82";
 
-    public LogisticsResponse catNo(String no, String type) {
+    public LogisticsResponse catNo(String no, String type, String phone) {
         try {
-            String urlSend;
-            if (StringUtils.isNotBlank(type)) {
-                urlSend = host + path + "?no=" + no + "&type=" + type;
+            if (no.startsWith("SF") && StringUtil.isBlank(phone)) {
+                return null;
             } else {
-                urlSend = host + path + "?no=" + no;
+                no = no + ":" + phone.substring(phone.length() - 4);
             }
-
-            URL url = new URL(urlSend);
-            HttpURLConnection httpURLCon = (HttpURLConnection) url.openConnection();
-            httpURLCon.setRequestMethod("GET");
-            httpURLCon.setRequestProperty("Authorization", "APPCODE " + appcode);
-            int httpCode = httpURLCon.getResponseCode();
+            String urlSend = "https://wuliu.market.alicloudapi.com/kdi?no=" + no + "&type=" + type;
+            if (StringUtils.isBlank(type)) {
+                urlSend = "https://wuliu.market.alicloudapi.com/kdi?no=" + no;
+            }
+            Map<String, String> header = Maps.newHashMap();
+            header.put("Authorization", "APPCODE " + appcode);
+            HttpResponse httpResponse = HttpUtil.httpGet(urlSend, header, 3000);
+            int httpCode = httpResponse.getStatus();
             if (httpCode == 200) {
-                String json = read(httpURLCon.getInputStream());
+                String json = httpResponse.body();
                 return JSONObject.parseObject(json, LogisticsResponse.class);
-            } else {
-                Map<String, List<String>> map = httpURLCon.getHeaderFields();
-                String error = map.get("X-Ca-Error-Message").get(0);
-                if (httpCode == 400 && error.equals("Invalid AppCode `not exists`")) {
-                    System.out.println("AppCode错误 ");
-                } else if (httpCode == 400 && error.equals("Invalid Url")) {
-                    System.out.println("请求的 Method、Path 或者环境错误");
-                } else if (httpCode == 400 && error.equals("Invalid Param Location")) {
-                    System.out.println("参数错误");
-                } else if (httpCode == 403 && error.equals("Unauthorized")) {
-                    System.out.println("服务未被授权（或URL和Path不正确）");
-                } else if (httpCode == 403 && error.equals("Quota Exhausted")) {
-                    System.out.println("套餐包次数用完 ");
-                } else {
-                    System.out.println("参数名错误 或 其他错误");
-                    System.out.println(error);
-                }
             }
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
 
-    private static String read(InputStream is) throws IOException {
-        StringBuffer sb = new StringBuffer();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                line = new String(line.getBytes(), StandardCharsets.UTF_8);
-                sb.append(line);
-            }
+    public String exCompany(String no){
+        String urlSend = "https://wuliu.market.alicloudapi.com/exCompany?no=" + no;
+        Map<String, String> header = Maps.newHashMap();
+        header.put("Authorization", "APPCODE " + appcode);
+        HttpResponse httpResponse = HttpUtil.httpGet(urlSend, header, 3000);
+        if(200 == httpResponse.getStatus()){
+            return httpResponse.body();
         }
-        return sb.toString();
+        return null;
     }
 
     public static void main(String[] args) {
-        String no = "SF1325680577086:6013";
+        String no = "432240570187671";
         LogisticsService service = new LogisticsService();
-        LogisticsResponse logisticsResponse = service.catNo(no, null);
+        LogisticsResponse logisticsResponse = service.catNo(no, null, "17600792030");
         System.out.println(logisticsResponse);
+        String s = service.exCompany(no);
+        System.out.println(s);
     }
 
 }

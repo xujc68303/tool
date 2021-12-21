@@ -40,17 +40,18 @@ public class HttpUtil {
     }
 
     public static HttpResponse httpPost(String url, Map<String, Object> paramMap) {
-        return httpPost(url, null, paramMap, 30000);
+        return httpPost(url, null, paramMap, null, 30000);
     }
 
     public static HttpResponse httpPost(String url, Map<String, Object> paramMap, int timeout) {
-        return httpPost(url, null, paramMap, timeout);
+        return httpPost(url, null, paramMap, null, timeout);
     }
 
-    public static HttpResponse httpPost(String url, Map<String, String> headerMap, Map<String, Object> paramMap, int timeout) {
+    public static HttpResponse httpPost(String url, Map<String, String> headerMap, Map<String, Object> paramMap, Map<String, Object> body, int timeout) {
         return HttpRequest.post(url)
                 .headerMap(headerMap, true)
-                .body(JSONObject.toJSONString(paramMap), contentType)
+                .form(paramMap)
+                .body(JSONObject.toJSONString(body))
                 .timeout(timeout)
                 .setSSLSocketFactory(SSLSocketClientUtil.socketFactory(SSLSocketClientUtil.x509TrustManager()))
                 .setHostnameVerifier(SSLSocketClientUtil.hostnameVerifier())
