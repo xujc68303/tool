@@ -1,11 +1,5 @@
 package com.xjc.tool.autoid;
 
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 
@@ -46,27 +40,27 @@ public class SnowflakeId {
     /**
      * 序列在id中占的位数
      */
-    private final long sequenceBits = 12L;
+    private static final long sequenceBits = 12L;
 
     /**
      * 机器ID向左移12位
      */
-    private final long workerIdShift = sequenceBits;
+    private static final long workerIdShift = sequenceBits;
 
     /**
      * 数据标识id向左移17位(12+5)
      */
-    private final long datacenterIdShift = sequenceBits + workerIdBits;
+    private static final long datacenterIdShift = sequenceBits + workerIdBits;
 
     /**
      * 时间截向左移22位(5+5+12)
      */
-    private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+    private static final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
 
     /**
      * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
      */
-    private final long sequenceMask = ~(-1L << sequenceBits);
+    private final static long sequenceMask = ~(-1L << sequenceBits);
 
     /**
      * 工作机器ID(0~31)
@@ -81,18 +75,12 @@ public class SnowflakeId {
     /**
      * 毫秒内序列(0~4095)
      */
-    private long sequence = 0L;
+    private static long sequence = 0L;
 
     /**
      * 上次生成ID的时间截
      */
-    private long lastTimestamp = -1L;
-
-    private static final SnowflakeId snowflakeId;
-
-    static {
-        snowflakeId = new SnowflakeId(getWorkId(), getDataCenterId());
-    }
+    private static long lastTimestamp = -1L;
 
     public SnowflakeId(long workerId, long dataCenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
@@ -108,41 +96,12 @@ public class SnowflakeId {
         SnowflakeId.datacenterId = dataCenterId;
     }
 
-    public static String generateId() {
-        return String.valueOf(snowflakeId.nextId());
-    }
-
-    private static Long getWorkId() {
-        try {
-            String hostAddress = Inet4Address.getLocalHost().getHostAddress();
-            int[] ints = StringUtils.toCodePoints(hostAddress);
-            int sums = 0;
-            for (int b : ints) {
-                sums += b;
-            }
-            return (long) (sums % 32);
-        } catch (UnknownHostException e) {
-            return RandomUtils.nextLong(0, 31);
-        }
-    }
-
-    private static Long getDataCenterId() {
-        String hostName = SystemUtils.getHostName();
-        if (StringUtils.isBlank(hostName)) hostName = "localhost";
-        int[] ints = StringUtils.toCodePoints(hostName);
-        int sums = 0;
-        for (int i : ints) {
-            sums += i;
-        }
-        return (long) (sums % 32);
-    }
-
     /**
      * 获得下一个ID (该方法是线程安全的)
      *
      * @return SnowflakeId
      */
-    private synchronized long nextId() {
+    public static synchronized long nextId() {
         long timestamp = timeGen();
         // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
@@ -178,7 +137,7 @@ public class SnowflakeId {
      * @param lastTimestamp 上次生成ID的时间截
      * @return 当前时间戳
      */
-    private long tilNextMillis(long lastTimestamp) {
+    private static long tilNextMillis(long lastTimestamp) {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
             timestamp = timeGen();
@@ -191,8 +150,13 @@ public class SnowflakeId {
      *
      * @return 当前时间(毫秒)
      */
-    private long timeGen() {
+    private static long timeGen() {
         return System.currentTimeMillis();
     }
 
+
+    public static void main(String[] args) {
+        System.out.println(SnowflakeId.nextId());
+        System.out.println(SnowflakeId.nextId());
+    }
 }
