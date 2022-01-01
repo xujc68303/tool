@@ -33,6 +33,7 @@
         <jsonwebtoken.version>0.9.0</jsonwebtoken.version>
         <validation.version>2.0.1.Final</validation.version>
         <commons-codec.version>1.10</commons-codec.version>
+        <google.zxing.core.version>3.4.1</google.zxing.core.version>
     </properties>
 
     <dependencyManagement>
@@ -278,6 +279,12 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
             <version>1.46</version>
+        </dependency>
+        <!--二维码-->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${google.zxing.core.version}</version>
         </dependency>
 
     </dependencies>
