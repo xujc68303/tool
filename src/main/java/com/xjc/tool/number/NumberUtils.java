@@ -15,7 +15,7 @@ public class NumberUtils {
         NumberFormat numberFormat = NumberFormat.getPercentInstance();
         numberFormat.setMaximumFractionDigits(1);
         Number parse = numberFormat.parse(discount);
-        return price.multiply(new BigDecimal(parse.doubleValue()).setScale(2, BigDecimal.ROUND_HALF_UP))
+        return price.multiply(new BigDecimal(parse.toString()).setScale(2, BigDecimal.ROUND_HALF_UP))
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
@@ -35,5 +35,7 @@ public class NumberUtils {
     public static void main(String[] args) throws ParseException {
         String str = "29%";
         System.out.println(convertDecimal(str));
+        BigDecimal gratuity = getGratuity(new BigDecimal("10.00"), str);
+        System.out.println(gratuity);
     }
 }
