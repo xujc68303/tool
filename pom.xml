@@ -25,12 +25,12 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <hutool.version>5.6.5</hutool.version>
         <pdfbox.version>2.0.8</pdfbox.version>
-        <itextpdf.version>5.5.6</itextpdf.version>
+        <itextpdf.version>5.5.12</itextpdf.version>
         <itext-asian.version>5.2.0</itext-asian.version>
         <pdfbox.version>2.0.8</pdfbox.version>
         <thumbnailator.version>0.4.14</thumbnailator.version>
         <jackson.version>2.12.3</jackson.version>
-        <jsonwebtoken.version>0.9.0</jsonwebtoken.version>
+        <jsonwebtoken.version>2.8.11.5</jsonwebtoken.version>
         <validation.version>2.0.1.Final</validation.version>
         <commons-codec.version>1.10</commons-codec.version>
         <google.zxing.core.version>3.4.1</google.zxing.core.version>
@@ -249,8 +249,8 @@
         </dependency>
 
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>${jsonwebtoken.version}</version>
         </dependency>
 
