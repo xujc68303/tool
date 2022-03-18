@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class JSONUtil {
         return r;
     }
 
-    public static <T> List<?> jsonToList(String json, T clazz) {
+    public static <T> List<?> jsonToList(String json, T clazz) throws IOException {
         if (json == null) {
             return null;
         }
@@ -76,7 +77,7 @@ public class JSONUtil {
         return clazzes;
     }
 
-    public static Map<Object, Object> jsonToMap(String json) {
+    public static Map<Object, Object> jsonToMap(String json) throws IOException {
         if (json == null) {
             return null;
         }
@@ -125,13 +126,13 @@ public class JSONUtil {
         try {
             CollectionType collectionType = MAPPER.getTypeFactory().constructCollectionType(collectionClass, clazz);
             result = MAPPER.readValue(json, collectionType);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public static JsonNode parseTree(String json) {
+    public static JsonNode parseTree(String json) throws IOException {
         if (json == null) {
             return null;
         }
