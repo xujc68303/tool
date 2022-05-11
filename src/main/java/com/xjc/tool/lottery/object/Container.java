@@ -4,12 +4,12 @@ public class Container {
     //    容器
     private String goodsName;
     // 商品比重
-    private Integer goodsWight;
+    private Double goodsWight;
 
     public Container() {
     }
 
-    public Container(String goodsName, Integer goodsWight) {
+    public Container(String goodsName, Double goodsWight) {
         this.goodsName = goodsName;
         this.goodsWight = goodsWight;
     }
@@ -22,11 +22,11 @@ public class Container {
         this.goodsName = goodsName;
     }
 
-    public Integer getGoodsWight() {
+    public Double getGoodsWight() {
         return goodsWight;
     }
 
-    public void setGoodsWight(Integer goodsWight) {
+    public void setGoodsWight(Double goodsWight) {
         this.goodsWight = goodsWight;
     }
 }

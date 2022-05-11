@@ -11,12 +11,12 @@ import lombok.Data;
 public class Goods {
 
     private String name; //商品名
-    private Integer wight ; //权重
+    private Double wight ; //权重
 
     public Goods() {
     }
 
-    public Goods(String name, int wight) {
+    public Goods(String name, Double wight) {
         this.name = name;
         this.wight = wight;
     }
@@ -29,11 +29,11 @@ public class Goods {
         this.name = name;
     }
 
-    public int getWight() {
+    public Double getWight() {
         return wight;
     }
 
-    public void setWight(int wight) {
+    public void setWight(Double wight) {
         this.wight = wight;
     }
 }

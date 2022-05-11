@@ -1,13 +1,10 @@
 package com.xjc.tool.lottery.service;
 
-import com.xjc.tool.lottery.object.Container;
 import com.xjc.tool.lottery.object.Goods;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 /**
  * @Author jiachenxu
@@ -21,48 +18,34 @@ public class LotteryService {
     public static String draw() {
         // db
         List<Goods> goodsList = new ArrayList<>();
-        Goods goods1 = new Goods("b站一年大会员", 10);
+        Goods goods1 = new Goods("b站一年大会员", 10D);
         goodsList.add(goods1);
-        Goods goods2 = new Goods("地平线5豪华版", 10);
+        Goods goods2 = new Goods("地平线5豪华版", 6D);
         goodsList.add(goods2);
-        Goods goods3 = new Goods("10元红包", 15);
+        Goods goods3 = new Goods("10元红包", 15D);
         goodsList.add(goods3);
-        Goods goods4 = new Goods("lv包", 1);
+        Goods goods4 = new Goods("lv包", 1D);
         goodsList.add(goods4);
-        Goods goods5 = new Goods("macbook pro", 1);
+        Goods goods5 = new Goods("macbook pro", 1D);
         goodsList.add(goods5);
-        Goods goods6 = new Goods("rtx3080显卡", 2);
+        Goods goods6 = new Goods("rtx3080显卡", 2D);
         goodsList.add(goods6);
-        Goods goods7 = new Goods("瑞幸咖啡10元代金卷", 20);
+        Goods goods7 = new Goods("瑞幸咖啡10元代金卷", 20D);
         goodsList.add(goods7);
-        Goods goods8 = new Goods("谢谢惠顾", 50);
+        Goods goods8 = new Goods("谢谢惠顾", 50D);
         goodsList.add(goods8);
-        goodsList = goodsList.stream()
-                .sorted(Comparator.comparing(Goods::getWight))
-                .collect(Collectors.toList());
-
-        List<Container> containers = goodsList.stream()
-                .map(goods -> {
-                    Container container = new Container();
-                    container.setGoodsName(goods.getName());
-                    container.setGoodsWight(goods.getWight());
-                    return container;
-                }).collect(Collectors.toList());
-
-        int pre = 0 , random = ThreadLocalRandom.current().nextInt(1,
-                goodsList.stream()
-                        .map(Goods::getWight)
-                        .reduce(0, Integer::sum));
 
 
-        for (Container container : containers) {
-            Integer goodsWight = container.getGoodsWight();
+        double pre = 0D, random = ThreadLocalRandom.current().nextDouble(1D, goodsList.stream().map(Goods::getWight).reduce(0D, Double::sum));
+
+        for (Goods container : goodsList) {
+            Double goodsWight = container.getWight();
             if (random >= pre && random < goodsWight) {
-                return container.getGoodsName();
+                return container.getName();
             }
             pre = goodsWight;
         }
-        return containers.get(containers.size() - 1).getGoodsName();
+        return goodsList.get(goodsList.size() - 1).getName();
     }
 
     public static void main(String[] args) {
