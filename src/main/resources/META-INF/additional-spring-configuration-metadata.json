@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "async.executor.thread.core_pool_size",
+      "type": "java.lang.String",
+      "description": "Description for async.executor.thread.core_pool_size."
+    },
+    {
+      "name": "async.executor.thread.max_pool_size",
+      "type": "java.lang.String",
+      "description": "Description for async.executor.thread.max_pool_size."
+    },
+    {
+      "name": "async.executor.thread.queue_capacity",
+      "type": "java.lang.String",
+      "description": "Description for async.executor.thread.queue_capacity."
+    },
+    {
+      "name": "async.executor.thread.keep_alive_time",
+      "type": "java.lang.String",
+      "description": "Description for async.executor.thread.keep_alive_time."
+    },
+    {
+      "name": "async.executor.thread.name.prefix",
+      "type": "java.lang.String",
+      "description": "Description for async.executor.thread.name.prefix."
+    }
+  ] }
