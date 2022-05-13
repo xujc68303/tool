@@ -12,6 +12,12 @@ import retrofit2.http.QueryMap;
 
 import java.util.Map;
 
+/**
+ * PayApi.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public interface PayApi {
 
     @GET("https://www.yeepay.com/app-merchant-proxy/node")

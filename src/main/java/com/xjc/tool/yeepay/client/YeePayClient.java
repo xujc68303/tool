@@ -21,6 +21,12 @@ import retrofit2.Retrofit;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * YeePayClient.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class YeePayClient implements IYeePay {
 
     /**

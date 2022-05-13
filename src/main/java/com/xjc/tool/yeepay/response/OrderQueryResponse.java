@@ -5,10 +5,16 @@ import com.xjc.tool.yeepay.client.YeePayClient;
 import com.xjc.tool.yeepay.exception.YeePayException;
 import com.xjc.tool.yeepay.utils.DigestUtil;
 
+/**
+ * OrderQueryResponse.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class OrderQueryResponse implements IVaildHmac {
 
     /**
-     * 业务类型 (固定值)
+     * 业务类型
      */
     private String r0_Cmd;
     /**

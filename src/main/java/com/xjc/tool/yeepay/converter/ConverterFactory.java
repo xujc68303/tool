@@ -15,6 +15,12 @@ import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.Map;
 
+/**
+ * ConverterFactory.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class ConverterFactory extends Converter.Factory {
 
     @Override

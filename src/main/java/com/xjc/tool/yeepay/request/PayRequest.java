@@ -3,6 +3,12 @@ package com.xjc.tool.yeepay.request;
 import com.xjc.tool.yeepay.client.YeePayClient;
 import com.xjc.tool.yeepay.utils.DigestUtil;
 
+/**
+ * PayRequest.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class PayRequest {
 
     /**

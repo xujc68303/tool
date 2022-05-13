@@ -7,6 +7,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+/**
+ * DigestUtil.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class DigestUtil {
 
     private static final String encodingCharset = "UTF-8";

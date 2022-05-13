@@ -1,5 +1,11 @@
 package com.xjc.tool.yeepay.exception;
 
+/**
+ * YeePayException.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class YeePayException extends RuntimeException {
 
     private final String errCode;

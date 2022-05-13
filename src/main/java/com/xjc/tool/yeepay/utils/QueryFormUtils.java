@@ -10,6 +10,12 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * QueryFormUtils.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class QueryFormUtils {
 
     public static Map<String, String> getEncodedQueryParams(Object obj) {

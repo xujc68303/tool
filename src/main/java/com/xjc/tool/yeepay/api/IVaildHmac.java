@@ -1,7 +1,10 @@
 package com.xjc.tool.yeepay.api;
 
 /**
- * Created by serv on 2017/4/24.
+ * IVaildHmac.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
  */
 public interface IVaildHmac {
     /**

@@ -1,11 +1,16 @@
 package com.xjc.tool.yeepay.response;
 
-
 import com.xjc.tool.yeepay.api.IVaildHmac;
 import com.xjc.tool.yeepay.client.YeePayClient;
 import com.xjc.tool.yeepay.exception.YeePayException;
 import com.xjc.tool.yeepay.utils.DigestUtil;
 
+/**
+ * OrderCancelResponse.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public class OrderCancelResponse implements IVaildHmac {
 
     /**

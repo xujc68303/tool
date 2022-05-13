@@ -8,6 +8,12 @@ import com.xjc.tool.yeepay.response.OrderQueryResponse;
 
 import java.util.Map;
 
+/**
+ * IYeePay.java
+ *
+ * @author Xujc
+ * @date 2022/5/16
+ */
 public interface IYeePay {
 
     /**
