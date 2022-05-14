@@ -1,9 +1,9 @@
-package com.xjc.tool.yeepay.api;
+package com.xjc.tool.yeepay.engine;
 
 import com.xjc.tool.yeepay.request.OrderCancelRequest;
 import com.xjc.tool.yeepay.request.OrderQueryRequest;
-import com.xjc.tool.yeepay.response.OrderCancelResponse;
-import com.xjc.tool.yeepay.response.OrderQueryResponse;
+import com.xjc.tool.yeepay.response.CancelOrderResponse;
+import com.xjc.tool.yeepay.response.QueryOrderResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -24,8 +24,8 @@ public interface PayApi {
     Call<Void> unifiedOrder(@QueryMap(encoded = true) Map<String, String> params);
 
     @POST("https://cha.yeepay.com/app-merchant-proxy/command")
-    Call<OrderQueryResponse> queryOrder(@Body OrderQueryRequest request);
+    Call<QueryOrderResponse> queryOrder(@Body OrderQueryRequest request);
 
     @POST("https://cha.yeepay.com/app-merchant-proxy/command")
-    Call<OrderCancelResponse> cancelOrder(@Body OrderCancelRequest request);
+    Call<CancelOrderResponse> cancelOrder(@Body OrderCancelRequest request);
 }

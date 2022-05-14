@@ -1,10 +1,10 @@
-package com.xjc.tool.yeepay.api;
+package com.xjc.tool.yeepay.engine;
 
 import com.xjc.tool.yeepay.request.OrderCancelRequest;
 import com.xjc.tool.yeepay.request.OrderQueryRequest;
 import com.xjc.tool.yeepay.request.PayRequest;
-import com.xjc.tool.yeepay.response.OrderCancelResponse;
-import com.xjc.tool.yeepay.response.OrderQueryResponse;
+import com.xjc.tool.yeepay.response.CancelOrderResponse;
+import com.xjc.tool.yeepay.response.QueryOrderResponse;
 
 import java.util.Map;
 
@@ -26,14 +26,14 @@ public interface IYeePay {
      * @param request
      * @return
      */
-    OrderQueryResponse queryOrder(OrderQueryRequest request);
+    QueryOrderResponse queryOrder(OrderQueryRequest request);
     /**
      * 撤销订单
      *
      * @param request
      * @return
      */
-    OrderCancelResponse cancelOrder(OrderCancelRequest request);
+    CancelOrderResponse cancelOrder(OrderCancelRequest request);
     /**
      * 验证通知签名
      *

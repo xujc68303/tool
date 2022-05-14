@@ -1,7 +1,7 @@
 package com.xjc.tool.yeepay.response;
 
-import com.xjc.tool.yeepay.api.IVaildHmac;
-import com.xjc.tool.yeepay.client.YeePayClient;
+import com.xjc.tool.yeepay.engine.IVaildHmac;
+import com.xjc.tool.yeepay.constant.YeePayConstant;
 import com.xjc.tool.yeepay.exception.YeePayException;
 import com.xjc.tool.yeepay.utils.DigestUtil;
 
@@ -11,7 +11,7 @@ import com.xjc.tool.yeepay.utils.DigestUtil;
  * @author Xujc
  * @date 2022/5/16
  */
-public class OrderCancelResponse implements IVaildHmac {
+public class CancelOrderResponse implements IVaildHmac {
 
     /**
      * 业务类型
@@ -39,8 +39,8 @@ public class OrderCancelResponse implements IVaildHmac {
     @Override
     public void validateHmac() {
         String[] stringArr = {r0_Cmd, r1_Code};
-        String localHmac = DigestUtil.getHmac(stringArr, YeePayClient.getMerSecret());
-        if (!localHmac.equals(hmac) || !DigestUtil.verifyCallbackHmac_safe(stringArr, hmac_safe, YeePayClient.getMerSecret())) {
+        String localHmac = DigestUtil.getHmac(stringArr, YeePayConstant.MER_SECRET);
+        if (!localHmac.equals(hmac) || !DigestUtil.verifyCallbackHmac_safe(stringArr, hmac_safe, YeePayConstant.MER_SECRET)) {
             throw new YeePayException("验证签名错误", "HMAC_ERROR");
         }
     }

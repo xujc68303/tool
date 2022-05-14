@@ -1,7 +1,7 @@
 package com.xjc.tool.yeepay.response;
 
-import com.xjc.tool.yeepay.api.IVaildHmac;
-import com.xjc.tool.yeepay.client.YeePayClient;
+import com.xjc.tool.yeepay.engine.IVaildHmac;
+import com.xjc.tool.yeepay.constant.YeePayConstant;
 import com.xjc.tool.yeepay.exception.YeePayException;
 import com.xjc.tool.yeepay.utils.DigestUtil;
 
@@ -11,7 +11,7 @@ import com.xjc.tool.yeepay.utils.DigestUtil;
  * @author Xujc
  * @date 2022/5/16
  */
-public class OrderQueryResponse implements IVaildHmac {
+public class QueryOrderResponse implements IVaildHmac {
 
     /**
      * 业务类型
@@ -96,8 +96,8 @@ public class OrderQueryResponse implements IVaildHmac {
         String[] stringArr = {r0_Cmd, r1_Code, r2_TrxId, r3_Amt, r4_Cur, r5_Pid, r6_Order, r8_MP,
                 rw_RefundRequestID, rx_CreateTime, ry_FinshTime, rz_RefundAmount, rb_PayStatus,
                 rc_RefundCount, rd_RefundAmt};
-        String localHmac = DigestUtil.getHmac(stringArr, YeePayClient.getMerSecret());
-        boolean ishmac_safe = DigestUtil.verifyCallbackHmac_safe(stringArr, hmac_safe, YeePayClient.getMerSecret());
+        String localHmac = DigestUtil.getHmac(stringArr, YeePayConstant.MER_SECRET);
+        boolean ishmac_safe = DigestUtil.verifyCallbackHmac_safe(stringArr, hmac_safe, YeePayConstant.MER_SECRET);
 
         if (!localHmac.equals(hmac) || !ishmac_safe) {
             throw new YeePayException("验证签名错误", "HMAC_ERROR");

@@ -9,4 +9,6 @@ package com.xjc.tool.yeepay.constant;
 public class YeePayConstant {
 
     public static final String BASE_REQUEST = "https://www.yeepay.com/";
+    public static final String MER_ID = "";
+    public static final String MER_SECRET = "";
 }
