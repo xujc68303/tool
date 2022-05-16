@@ -287,7 +287,27 @@
             <artifactId>core</artifactId>
             <version>${google.zxing.core.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>3.6.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 
@@ -336,5 +356,12 @@
 
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </distributionManagement>
 
 </project>
