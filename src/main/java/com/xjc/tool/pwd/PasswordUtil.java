@@ -42,7 +42,7 @@ import java.security.spec.InvalidKeySpecException;
  * @author Xujc
  * @date 2021/12/8
  */
-public class PasswordUtils {
+public class PasswordUtil {
 
     private static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
     private static final int SALT_BYTE_SIZE = 24;
