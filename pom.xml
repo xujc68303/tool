@@ -5,7 +5,7 @@
 
     <groupId>com.xjc</groupId>
     <artifactId>tool</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>3.0.1</version>
     <name>tool</name>
     <description>tool project for Spring Boot</description>
 
