@@ -8,16 +8,20 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.xjc.tool.pdf.api.PdfService;
 import com.xjc.tool.pdf.model.ImageExt;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author jiachenxu
@@ -27,11 +31,11 @@ import java.util.Map;
 @Service
 public class PdfServiceImpl implements PdfService {
 
-    private static final String KEY_PRE = "Picture";
+    private static final String KEY_PRE = "picture";
 
     private static final List<String> TYPE_LIST = Lists.newArrayList("jpg", "png");
 
-    private static Map<String, ImageExt> IMAGE_EXT = Maps.newHashMap();
+    private static final Map<String, ImageExt> IMAGE_EXT = Maps.newHashMap();
 
     @PostConstruct
     public void init() {
@@ -54,20 +58,16 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public List<String> mergeImage2One(List<File> imagePathList, boolean isPartition, int partition, Map<String, ImageExt> extMap, String outPath) throws IllegalArgumentException {
+    public List<String> mergeImage2One(List<File> imagePathList, int partition, Map<String, ImageExt> extMap, String outPath) throws IllegalArgumentException {
         List<String> result = Lists.newArrayList();
-        List<List<File>> partitionList = Lists.newArrayList();
-        if (isPartition) {
-            if (!extMap.isEmpty()) {
-                if (extMap.size() != partition) {
-                    throw new IllegalArgumentException("分片数量与图片信息数量不一致");
-                }
-                IMAGE_EXT.clear();
-                extMap.forEach((k, v) -> IMAGE_EXT.merge(k, v, (v1, v2) -> new ImageExt(v2.getField(), v2.getPath(), v2.getLocationX(), v2.getLocationY())));
-            }
-            partitionList = Lists.partition(imagePathList, partition);
-        } else {
-            partitionList.add(imagePathList);
+        if (extMap.isEmpty() || extMap.size() != partition) {
+            throw new IllegalArgumentException("分片数量与图片信息数量不一致");
+        }
+        IMAGE_EXT.clear();
+        extMap.forEach((k, v) -> IMAGE_EXT.merge(k, v, (v1, v2) -> new ImageExt(v2.getField(), v2.getPath(), v2.getLocationX(), v2.getLocationY())));
+        List<List<File>> partitionList = Lists.partition(imagePathList, partition);
+        if (CollectionUtils.isEmpty(partitionList)) {
+            throw new IllegalArgumentException("图片源数量空");
         }
         int index = 0;
         StringBuilder outPathBuilder = new StringBuilder(outPath);
@@ -75,8 +75,12 @@ public class PdfServiceImpl implements PdfService {
         for (List<File> imagePath : partitionList) {
             checkImageType(imagePath);
             for (int i = 0; i < imagePath.size(); i++) {
-                ImageExt coordinate = getCoordinate(KEY_PRE + (i + 1));
-                coordinate.setField(KEY_PRE + (i + 1));
+                String key = KEY_PRE + (i + 1);
+                ImageExt coordinate = IMAGE_EXT.get(key);
+                if (Objects.isNull(coordinate)) {
+                    continue;
+                }
+                coordinate.setField(key);
                 coordinate.setPath(imagePath.get(i).getPath());
                 imageExtList.add(coordinate);
             }
@@ -84,8 +88,12 @@ public class PdfServiceImpl implements PdfService {
             if (!outPathBuilder.toString().endsWith(File.separator)) {
                 outPathBuilder.append(File.separator);
             }
-            String outputPdfPath = outPathBuilder.toString() + File.separator + "mergeRes" + index + ".pdf";
-            String templatePath = Thread.currentThread().getContextClassLoader().getResource("pdfTemplate/merge_certificate_template.pdf").getPath();
+            String outputPdfPath = outPathBuilder + File.separator + "mergeRes" + index + ".pdf";
+            URL resource = Thread.currentThread().getContextClassLoader().getResource("pdfTemplate/merge_certificate_template.pdf");
+            if (null == resource) {
+                continue;
+            }
+            String templatePath = resource.getPath();
             addImage(templatePath, outputPdfPath, imageExtList);
             imageExtList.clear();
             index++;
@@ -107,7 +115,7 @@ public class PdfServiceImpl implements PdfService {
         try {
             // 读取模板文件
             pdfReader = new PdfReader(templatePath);
-            pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(outputPdfPath));
+            pdfStamper = new PdfStamper(pdfReader, Files.newOutputStream(Paths.get(outputPdfPath)));
             for (ImageExt ext : imageExts) {
                 // 获取pdf操作页面
                 PdfContentByte overContent = pdfStamper.getOverContent(1);
@@ -156,10 +164,6 @@ public class PdfServiceImpl implements PdfService {
         return isVertical;
     }
 
-    private ImageExt getCoordinate(String key) {
-        return IMAGE_EXT.get(key);
-    }
-
     /**
      * 图片格式过滤
      *
@@ -175,9 +179,7 @@ public class PdfServiceImpl implements PdfService {
         });
     }
 
-    private String getType(String iamgeName) {
-        return iamgeName.substring(iamgeName.lastIndexOf(".") + 1);
+    private String getType(String imageName) {
+        return imageName.substring(imageName.lastIndexOf(".") + 1);
     }
-
-
 }
