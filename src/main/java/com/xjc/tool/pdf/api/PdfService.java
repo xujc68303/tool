@@ -27,13 +27,12 @@ public interface PdfService {
      * 合并多张图片为一张pdf
      *
      * @param imagePathList 图片源
-     * @param isPartition   是否分片处理
      * @param partition     分片数量
      * @param extMap        图片信息
      * @param outPath       输出路径
      * @return 合并pdf图片
      * @throws IllegalArgumentException
      */
-    List<String> mergeImage2One(List<File> imagePathList, boolean isPartition, int partition,
+    List<String> mergeImage2One(List<File> imagePathList, int partition,
                                 Map<String, ImageExt> extMap, String outPath) throws IllegalArgumentException;
 }
